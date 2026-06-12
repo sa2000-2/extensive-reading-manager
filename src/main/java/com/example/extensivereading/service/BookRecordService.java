@@ -10,6 +10,10 @@ import com.example.extensivereading.dto.BookRecordForm;
 import com.example.extensivereading.entity.BookRecord;
 import com.example.extensivereading.repository.BookRecordRepository;
 
+/**
+ * 読書管理機能に関する処理のServiceクラス
+ * 登録、語数計算、更新、削除の処理を行う
+ */
 @Service
 public class BookRecordService {
 	private final BookRecordRepository bookRecordRepository;
@@ -19,6 +23,11 @@ public class BookRecordService {
 	 }
 	 
 
+	 /**
+	     * 読書記録の登録を実行する。
+	     * @param userId ユーザーID
+	     * @param form 登録画面から入力された読書記録の情報
+	     */
 	 @Transactional
 	 public void bookRegister(String userId, BookRecordForm form) {
 		BookRecord record = new BookRecord();
@@ -31,25 +40,49 @@ public class BookRecordService {
 	        bookRecordRepository.save(record);
 	    }
 	 
+	 /**
+	     * 読書記録のリストを取得する。
+	     * @param userId ユーザーID
+	     * @return 読んだ日付が新しい順に並んだ読書記録情報のリスト
+	     */
 	 public List<BookRecord> getAllRecords(String userId) {
 	        return bookRecordRepository.findByUserIdOrderByReadDateDesc(userId);
 	    }
 	 
-	 
+	 /**
+	     * 合計語数を計算する
+	     * * @param records 読書記録の情報リスト
+	     * @return ユーザーの合計語数
+	     */
 	 public int calculateTotalWords(List<BookRecord> records) {
 	        return records.stream()
 	                      .mapToInt(BookRecord::getWordCount)
 	                      .sum();
 	    }
 	 
+	 
+	 /**
+	     * 目標語数への進捗%を計算する
+	     * * @param totalWords ユーザーの合計語数
+	     * @param targetWords ユーザーの目標語数
+	     * @return 目標語数への進捗%
+	     */
 	    public double calculateProgressPercentage(int totalWords, int targetWords) {
-	        // ゼロ除算（0で割るエラー）を防ぐための論理チェック
 	        if (targetWords <= 0) {
 	            return 0.0;
 	        }
 	        return ((double) totalWords / targetWords) * 100;
 	    }
 
+	    
+	    /**
+	     * データベースからユーザーの読書記録の情報を取得する
+	     * * @param userId ユーザーID
+	     * @param　recordId 本の記録ID
+	     * @return データベースのユーザーの読書記録の情報
+	     * @throws IllegalArgumentException 指定した記録がない場合
+	     * @throws AccessDeniedException データベースのユーザーIDとユーザーIDが異なる場合に発生
+	     */
 	    public BookRecord getRecord(String userId, Integer recordId) {
 	    	if (recordId == null) {
 	            throw new IllegalArgumentException("記録IDが指定されていません。");
@@ -64,6 +97,11 @@ public class BookRecordService {
 	        return record;
 	    }
 	 
+	    /**
+	     * 編集画面での更新データを保存する
+	     * @param userId　ユーザーID
+	     * @param　form 変更画面で入力された読書記録の情報
+	     */
 	    @Transactional
 	    public void updateRecord(String userId, BookRecordForm form) {
 	        BookRecord record = getRecord(userId, form.getRecordId());
@@ -75,6 +113,11 @@ public class BookRecordService {
 	        bookRecordRepository.save(record);
 	    }
 	    
+	    /**
+	     * 読書記録の削除
+	     * @param userId　ユーザーID
+	     * @param　recordId　本の記録ID
+	     */
 	    @Transactional
 	    public void deleteRecord(String userId, Integer recordId) {
 	        BookRecord record = getRecord(userId, recordId);
