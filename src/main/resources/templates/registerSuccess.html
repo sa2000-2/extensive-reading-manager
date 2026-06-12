@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>登録完了</title>
+
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+
+<body class="auth-body">
+
+<div class="auth-card">
+
+    <h2 class="auth-title">登録完了</h2>
+
+    <p class="success-message">アカウントの作成が完了しました</p>
+
+    <div class="info-box">
+        <span class="dynamic-text" th:text="${registeredName}">ゲスト</span> 様<br>
+        (ID: <span class="dynamic-text" th:text="${registeredId}">unknown</span>)<br>
+        ようこそ
+    </div>
+
+    <div class="auth-links">
+        <a th:href="@{/users/login}">ログイン画面へ進む</a>
+        <a th:href="@{/top}">トップ画面へ戻る</a>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>アカウント登録</title>
+
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+
+<body class="auth-body">
+
+<div class="auth-card">
+
+    <h2 class="auth-title">アカウント登録</h2>
+
+    <p class="error-message" th:if="${errorMsg}" th:text="${errorMsg}"></p>
+
+    <form class="auth-form"
+          th:action="@{/users/register}"
+          th:object="${userRegisterForm}"
+          method="post">
+
+        <label>
+            ユーザー名
+            <input type="text" th:field="*{name}">
+            <span class="field-error" th:errors="*{name}"></span>
+        </label>
+
+        <label>
+            ユーザーID
+            <input type="text" th:field="*{id}">
+            <span class="field-error" th:errors="*{id}"></span>
+        </label>
+
+        <label>
+            パスワード
+            <input type="password" th:field="*{password}">
+            <span class="field-error" th:errors="*{password}"></span>
+        </label>
+
+        <button type="submit" class="btn-primary">アカウント作成</button>
+
+    </form>
+
+    <div class="auth-links">
+        <a th:href="@{/users/login}">ログインへ戻る</a>
+        <a th:href="@{/top}">トップ画面へ戻る</a>
+    </div>
+
+</div>
+
+</body>
+</html>

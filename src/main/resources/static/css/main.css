@@ -1,0 +1,101 @@
+/* ==========================================================================
+   メイン画面・ユーザー設定変更 固有スタイル（main.css）
+   ========================================================================== */
+
+.main-header { margin-bottom: 20px; }
+.user-name { color: #1e3a8a; font-weight: bold; }
+
+/* --- 1. プログレスバー --- */
+.progress-bar {
+    width: 100%;
+    height: 18px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+.progress-fill {
+    height: 100%;
+    background: #1e3a8a;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+/* --- 2. メニューグリッド --- */
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+}
+.menu-item {
+    display: block;
+    padding: 14px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    text-align: center;
+    color: #1e3a8a;
+    font-weight: bold;
+    transition: 0.2s;
+}
+.menu-item:hover { background: #e0e7ff; }
+
+/* --- 3. ログアウト --- */
+.logout-form { margin-top: 30px; text-align: center; }
+.btn-logout {
+    background: transparent;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-logout:hover { background: #f1f5f9; color: #1e3a8a; border-color: #1e3a8a; }
+
+/* ==========================================================================
+   4. ユーザー設定変更・退会固有（改行・横幅最適化版）
+   ========================================================================== */
+
+/* ユーザー設定変更画面：入力しやすいよう540pxを維持 */
+.user-edit-card { 
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* アカウント削除画面：740pxに完全統一 */
+.user-delete-card {
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 上の「メイン画面へ」リンクとの間の隙間を確保 */
+.navigation-links {
+    margin-bottom: 24px;
+}
+
+/* 下部のリンクエリア（薄い線は消去済み） */
+.user-edit-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 0;
+    border-top: none;
+    text-align: center;
+}
+
+/* 削除確認ボタン */
+.center-delete-btn {
+    align-self: center;
+    width: auto;
+    min-width: 240px;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-top: 12px;
+    white-space: nowrap; /* ←追加：ボタン内の文字が絶対に途中で改行されないように強制固定 */
+}

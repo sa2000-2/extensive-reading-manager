@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>本の編集</title>
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/bookRecord.css}">
+</head>
+<body class="main-body">
+
+<div class="main-container">
+
+    <a class="back-link" th:href="@{/books/list}">← 一覧へ戻る</a>
+
+    <div class="card form-card">
+
+        <h2>本の編集</h2>
+
+        <form th:action="@{/books/update}"
+              th:object="${bookRecordForm}"
+              method="post" class="form">
+
+            <input type="hidden" th:field="*{recordId}">
+
+            <div class="form-group">
+                <label>読んだ日付</label>
+                <input type="date" th:field="*{readDate}">
+                <div class="error" th:if="${#fields.hasErrors('readDate')}" th:errors="*{readDate}"></div>
+            </div>
+
+            <div class="form-group">
+                <label>本のタイトル</label>
+                <input type="text" th:field="*{bookTitle}">
+                <div class="error" th:if="${#fields.hasErrors('bookTitle')}" th:errors="*{bookTitle}"></div>
+            </div>
+
+            <div class="form-group">
+                <label>語数</label>
+                <input type="number" th:field="*{wordCount}">
+                <div class="error" th:if="${#fields.hasErrors('wordCount')}" th:errors="*{wordCount}"></div>
+            </div>
+
+            <button class="btn-primary" type="submit">変更を保存する</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

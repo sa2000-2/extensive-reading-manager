@@ -1,0 +1,30 @@
+.navigation-links .btn-link-strong { background-color: #f1f5f9; padding: 8px 16px; border-radius: 6px; transition: background-color 0.2s; }
+.navigation-links .btn-link-strong:hover { background-color: #e0e7ff; text-decoration: none; }
+.card-header-area { margin-bottom: 16px; }
+
+/* おすすめリスト・アイテム */
+.recommendation-results, .favorite-results { display: flex; flex-direction: column; }
+.book-item, .favorite-item { padding: 24px 0; border-bottom: 1px solid #f1f5f9; }
+.book-item:last-child, .favorite-item:last-child { border-bottom: none; padding-bottom: 0; }
+.book-title { font-size: 18px; color: #1e3a8a; margin: 0 0 12px 0; }
+.book-meta-box { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 12px; background-color: #f8fafc; padding: 10px 16px; border-radius: 6px; }
+.book-detail { font-size: 13px; color: #475569; margin: 0; }
+.book-summary { font-size: 14px; color: #334155; line-height: 1.6; margin: 0 0 16px 0; }
+
+/* お気に入り追加ボタン固有 */
+.favorite-form { margin: 0; }
+.btn-favorite {
+    background-color: #ffffff;
+    color: #1e3a8a;
+    border: 1px solid #cbd5e1;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.btn-favorite:hover { background-color: #e0e7ff; border-color: #1e3a8a; }
+.action-area { display: flex; justify-content: flex-end; }
+.delete-form { margin: 0; }

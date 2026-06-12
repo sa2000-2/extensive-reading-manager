@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>ユーザー設定変更</title>
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/main.css}">
+<link rel="stylesheet" th:href="@{/css/bookRecord.css}">
+<link rel="stylesheet" th:href="@{/css/recommend.css}">
+</head>
+<body class="main-body">
+
+<div class="main-container">
+
+    <div class="card user-edit-card">
+        <h2>ユーザー設定変更</h2>
+		
+		<div class="navigation-links">
+		            <a th:href="@{/users/main}">← メイン画面へ</a>
+		</div>
+
+        <div th:if="${successMessage}" class="inner-success-message">
+            <p class="alert-danger-text" th:text="${successMessage}"></p>
+        </div>
+        <div th:if="${errorMessage}" class="inner-success-message">
+            <p class="alert-danger-text" th:text="${errorMessage}"></p>
+        </div>
+        
+		<form th:action="@{/users/edit}" th:object="${userEditForm}" method="post" class="form">
+		            
+		            <div class="form-group">
+		                <label for="name">名前</label>
+		                <input type="text" id="name" maxlength="100" th:field="*{name}">
+		                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+		            </div>
+		                    
+		            <div class="form-group">
+		                <label for="targetWords">目標語数</label>
+		                <input type="number" id="targetWords" th:field="*{targetWords}">
+		                <div class="error" th:if="${#fields.hasErrors('targetWords')}" th:errors="*{targetWords}"></div>
+		            </div>
+		                    
+		            <div class="form-group">
+		                <label for="newPassword">
+		                    新しいパスワード <span class="label-hint">（変更する場合のみ入力）</span>
+		                </label>
+		                <input type="password" id="newPassword" maxlength="64" th:field="*{newPassword}">
+		                <div class="error" th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}"></div>
+		            </div>
+
+		            <div class="form-group">
+		                <label for="confirmNewPassword">新しいパスワード（確認用）</label>
+		                <input type="password" id="confirmNewPassword" maxlength="64" th:field="*{confirmNewPassword}">
+		            </div>
+
+		            <button type="submit" class="btn-primary center-submit-btn">変更を保存する</button>
+        </form>
+        
+        <div class="user-edit-links">
+            <a th:href="@{/users/deleteConfirm}">アカウント削除（退会）はこちら</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+
+.form-card { 
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.sub-text { font-size: 14px; color: #64748b; margin-top: 0; margin-bottom: 24px; }
+.status { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; font-size: 15px; color: #334155; }
+
+/* 読書履歴テーブル */
+.book-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 20px; line-height: 1.5; }
+.book-table th { background-color: #f8fafc; color: #475569; font-weight: bold; padding: 16px 20px; border-bottom: 2px solid #e2e8f0; font-size: 13px; letter-spacing: 0.05em; }
+.book-table td { padding: 18px 20px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
+.book-table tr { transition: background-color 0.15s ease; }
+.book-table tbody tr:hover td { background-color: #f1f5f9; }
+
+/* 列幅配分 */
+.book-table th:nth-child(1), .book-table td:nth-child(1) { width: 110px; text-align: center; color: #64748b; white-space: nowrap; }
+.book-table th:nth-child(2), .book-table td:nth-child(2) { text-align: left; font-weight: 500; }
+.book-table th:nth-child(3), .book-table td:nth-child(3) { width: 100px; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.book-table th:nth-child(4), .book-table td:nth-child(4) { width: 70px;  text-align: center; white-space: nowrap; }
+.book-table th:nth-child(5), .book-table td:nth-child(5) { width: 80px;  text-align: center; white-space: nowrap; }
+
+.book-table a { font-weight: bold; display: inline-block; padding: 6px 12px; border-radius: 4px; transition: background-color 0.2s; white-space: nowrap; }
+.book-table a:hover { background-color: #e0e7ff; }
+.book-table form { display: inline; margin: 0; padding: 0; }
+.book-table td[colspan="5"] { text-align: center; color: #94a3b8; padding: 48px 20px; background-color: #f8fafc; }

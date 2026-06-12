@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>お気に入りおすすめ本一覧</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/recommend.css}">
+</head>
+<body class="main-body">
+
+<div class="main-container">
+
+    <div class="card header-card">
+        <h2>お気に入りオススメ本一覧</h2>
+        <p class="sub-text">これまでにあなたがお気に入りに登録したAIおすすめ本の一覧です。</p>
+        
+        <div class="navigation-links">
+            <a th:href="@{/recommend}" class="back-link">← AIおすすめ検索に戻る</a>
+        </div>
+    </div>
+
+    <div class="card favorites-card">
+        
+        <div class="card-header-area">
+            <h3>登録済みリスト</h3>
+            
+            <div th:if="${successMessage != null}" class="inner-success-message">
+                <p class="alert-danger-text" th:text="${successMessage}"></p>
+            </div>
+            <div th:if="${errorMessage != null}" class="inner-success-message">
+                <p class="alert-danger-text" th:text="${errorMessage}"></p>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(favoriteList)}" class="empty-message">
+            <p>お気に入りに登録されている本はありません。</p>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(favoriteList)}" class="favorite-results">
+            <div th:each="favorite : ${favoriteList}" class="favorite-item">
+                
+                <h4 th:text="${favorite.bookTitle}" class="book-title">本のタイトル</h4>
+                
+                <div class="book-meta-box">
+                    <p class="book-detail"><strong>著者:</strong> <span th:text="${favorite.author}">著者名</span></p>
+                    <p class="book-detail"><strong>出版社:</strong> <span th:text="${favorite.publisher}">出版社名</span></p>
+                </div>
+                
+                <p class="book-summary"><strong>あらすじと理由:</strong><br><span th:text="${favorite.summary}">あらすじ内容</span></p>
+
+                <div class="action-area">
+                    <form th:action="@{/recommend/favorite/delete/{id}(id=${favorite.id})}" method="post" class="delete-form">
+                        <button type="submit" class="delete-button" onclick="return confirm('この本をお気に入りリストから削除してもよろしいですか？');">リストから削除</button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>読書記録一覧</title>
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/bookRecord.css}">
+</head>
+
+<body>
+
+<div class="main-container">
+
+    <div class="card">
+
+        <h2>読書記録一覧</h2>
+
+        <div class="inner-success-message" th:if="${successMessage != null}">
+            <p class="alert-danger-text" th:text="${successMessage}"></p>
+        </div>
+
+        <div class="status">
+            <p>
+                合計語数：
+                <span class="bold" th:text="${totalWords}"></span>
+                /
+                目標：
+                <span class="bold" th:text="${targetWords}"></span>
+            </p>
+
+            <p>
+                達成率：
+                <span class="bold"
+                      th:text="${#numbers.formatDecimal(progress,1,1)}"></span> %
+            </p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill"
+                 th:style="'width:' + ${progress} + '%'">
+            </div>
+        </div>
+		
+		<div class="navigation-links">
+		            <a th:href="@{/users/main}">← メイン画面へ</a>
+		</div>
+
+    </div>
+
+    <div class="card">
+        <a class="menu-item" th:href="@{/books/add}">
+            ＋ 新しく本を登録する
+        </a>
+    </div>
+
+    <div class="card">
+
+        <h3>読書履歴</h3>
+
+        <table class="book-table">
+
+            <tr>
+                <th>日付</th>
+                <th>タイトル</th>
+                <th>語数</th>
+                <th>編集</th>
+                <th>削除</th>
+            </tr>
+
+            <tr th:each="record : ${records}">
+                <td th:text="${record.readDate}"></td>
+                <td th:text="${record.bookTitle}"></td>
+                <td th:text="${record.wordCount}"></td>
+
+                <td>
+                    <a th:href="@{/books/edit/{id}(id=${record.recordId})}">
+                        編集
+                    </a>
+                </td>
+
+                <td>
+                    <form th:action="@{/books/delete/{id}(id=${record.recordId})}"
+                          method="post">
+                        <input type="submit" value="削除" onclick="return confirm('本当に削除しますか？');">
+                    </form>
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(records)}">
+                <td colspan="5">まだ登録がありません</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

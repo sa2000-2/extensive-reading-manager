@@ -1,0 +1,192 @@
+/* ==========================================================================
+   全画面共通デザインシステム（common.css）
+   ========================================================================== */
+
+/* --- 1. グローバルルート --- */
+body, .main-body {
+    margin: 0;
+    padding: 0;
+    background: #f5f7fb;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1e293b;
+    box-sizing: border-box;
+}
+
+.main-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+/* --- 2. カードコンポーネント（角丸12px・共通の影） --- */
+.card, .auth-card {
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+.card h2 { font-size: 24px; color: #0f172a; margin: 0 0 8px 0; }
+.card h3 { font-size: 16px; color: #0f172a; margin: 0 0 16px 0; font-weight: bold; }
+.bold { font-weight: bold; }
+
+/* --- 3. リンク共通 --- */
+a, .back-link {
+    color: #1e3a8a;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+a:hover, .back-link:hover { text-decoration: underline; }
+.back-link { display: inline-block; color: #64748b; margin-bottom: 16px; font-size: 14px; }
+.back-link:hover { color: #1e3a8a; }
+
+/* --- 4. 共通フォームレイアウト & 入力欄 --- */
+.form { display: flex; flex-direction: column; gap: 20px; }
+.form-group { display: flex; flex-direction: column; }
+.form-group label { font-size: 14px; font-weight: bold; color: #334155; margin-bottom: 8px; }
+.form-group label .label-hint { font-size: 12px; font-weight: normal; color: #64748b; margin-left: 4px; }
+
+/* 全入力欄のデザイン完全同期 */
+input[type="text"], input[type="password"], input[type="number"], input[type="date"], .form-select, .post-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #0f172a;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, .form-select:focus, .post-textarea:focus {
+    border-color: #1e3a8a;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.15);
+}
+
+/* --- 5. ボタン共通デザイン --- */
+/* プライマリボタン（紺色） */
+.btn-primary, .post-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #1e3a8a;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-primary:hover, .post-submit:hover { background-color: #172554; }
+
+/* 中央配置の大ボタン */
+.center-submit-btn {
+    align-self: center;
+    width: auto;
+    min-width: 240px;
+    padding: 12px 48px;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    background-color: #1e3a8a;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 12px;
+}
+.center-submit-btn:hover {
+    background-color: #172554;
+    box-shadow: 0 6px 16px rgba(30, 58, 138, 0.25);
+    transform: translateY(-1px);
+}
+.center-submit-btn:active { transform: translateY(1px); box-shadow: 0 2px 6px rgba(30, 58, 138, 0.15); }
+
+/* 共通デリート（削除）ボタン */
+.delete-button, .center-delete-btn, .book-table input[type="submit"] {
+    background: #fff5f5;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.delete-button:hover, .center-delete-btn:hover, .book-table input[type="submit"]:hover {
+    background: #ffe4e6;
+    border-color: #fda4af;
+}
+
+/* --- 6. メッセージ・エラー共通 --- */
+.inner-success-message, .success-message, .error-message {
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 20px;
+}
+.alert-danger-text, .error, .error-message, .field-error {
+    color: #e11d48;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 0;
+    text-align: center;
+}
+.field-error, .error { font-size: 13px; text-align: left; margin-top: 6}
+
+/* ==========================================================================
+   6. ナビゲーション・リンク（1つの時も2つの時も自動対応版）
+   ========================================================================== */
+.navigation-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 16px;
+}
+
+/* 基本スタイル：リンクが1つだけの時、または左側の「メイン画面へ」に適用 */
+.navigation-links a {
+    color: #64748b;      /* 目立ちすぎない落ち着いたグレー */
+    font-size: 15px;     /* 文字サイズを小さく抑える */
+    font-weight: normal; /* 太字を解除して視覚的な重みを軽減 */
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.navigation-links a:hover {
+    color: #1e3a8a;      /* ホバー時のみ本来の紺色に */
+    text-decoration: underline;
+}
+
+/* 右側ボタン：「2番目以降にあるリンク」または特定のボタンクラスがある場合のみ適用 */
+.navigation-links a:not(:first-child), /* ← last-child から変更して1つだけの時は除外 */
+.navigation-links .btn-link-strong,
+.navigation-links .btn-refresh {
+    margin-left: auto;        /* 右端へ押し出す */
+    background-color: #f1f5f9; /* 淡いグレーのボタン背景 */
+    color: #1e3a8a;           /* 基調色の紺色 */
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+/* 右側ボタンのホバー挙動 */
+.navigation-links a:not(:first-child):hover,
+.navigation-links .btn-link-strong:hover,
+.navigation-links .btn-refresh:hover {
+    background-color: #e0e7ff; /* システム共通のホバー色（淡いインディゴ） */
+    color: #1e3a8a;
+    text-decoration: none;
+}

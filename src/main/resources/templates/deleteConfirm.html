@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>アカウント削除</title>
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/main.css}">
+<link rel="stylesheet" th:href="@{/css/bookRecord.css}">
+</head>
+<body class="main-body">
+
+<div class="main-container">
+
+	<div class="card user-delete-card">
+        <h2>アカウント削除の最終確認</h2>
+        
+        <div class="guideline">
+            <h3>ご注意ください</h3>
+            <p>アカウントを削除すると、これまでのすべての読書記録やつぶやきが完全に消去されます。<br>
+            上記の内容に同意して完全に退会する場合は、下のボタンを押してください。</p>
+        </div>
+
+        <form th:action="@{/users/delete}" method="post" class="form">
+            <button type="submit" class="center-delete-btn" 
+                    onclick="return confirm('本当に削除しますか？');">
+                本当に削除する（記録がすべて消えます）
+            </button>
+        </form>
+
+        <div class="user-edit-links">
+            <a th:href="@{/users/edit}">変更画面に戻る</a>
+            <a th:href="@{/users/main}">メイン画面へ</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

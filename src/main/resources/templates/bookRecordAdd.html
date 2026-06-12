@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>本の登録</title>
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/bookRecord.css}">
+</head>
+<body class="main-body">
+
+<div class="main-container">
+
+    <a class="back-link" th:href="@{/books/list}">← 読書一覧へ戻る</a>
+
+    <div class="card form-card">
+
+        <h2>本の登録</h2>
+
+        <p class="sub-text">
+            新しく読んだ本を記録します
+        </p>
+
+        <div th:if="${successMessage != null}" class="inner-success-message">
+            <p class="alert-danger-text" th:text="${successMessage}"></p>
+        </div>
+
+        <form class="form" th:action="@{/books/add}" th:object="${bookRecordForm}" method="post">
+
+            <div class="form-group">
+                <label>読んだ日付</label>
+                <input type="date" th:field="*{readDate}">
+                <div class="error" th:if="${#fields.hasErrors('readDate')}" th:errors="*{readDate}"></div>
+            </div>
+
+            <div class="form-group">
+                <label>本のタイトル</label>
+                <input type="text" th:field="*{bookTitle}">
+                <div class="error" th:if="${#fields.hasErrors('bookTitle')}" th:errors="*{bookTitle}"></div>
+            </div>
+
+            <div class="form-group">
+                <label>語数</label>
+                <input type="number" th:field="*{wordCount}">
+                <div class="error" th:if="${#fields.hasErrors('wordCount')}" th:errors="*{wordCount}"></div>
+            </div>
+
+            <button class="btn-primary" type="submit">登録する</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

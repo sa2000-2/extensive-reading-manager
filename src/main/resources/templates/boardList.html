@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>掲示板</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/board.css}">
+</head>
+<body class="main-body">
+
+<div class="main-container">
+
+    <div class="card header-card">
+        <h2>掲示板</h2>
+        <p class="sub-text">本の感想やおすすめなどを書くための掲示板です。</p>
+        
+        <div class="guideline">
+            <h3>投稿前にご確認ください</h3>
+            <p>他の利用者が不快になる内容、誹謗中傷や暴言、個人情報を含む投稿は禁止しています。<br>
+				皆さんが安心して利用できる掲示板づくりにご協力ください。</p>
+        </div>
+        
+        <div class="navigation-links">
+            <a th:href="@{/users/main}">← メイン画面へ</a>
+            <a th:href="@{/board/list}" class="btn-refresh">更新する</a>
+        </div>
+    </div>
+
+	<div class="card post-form-card">
+	        <form th:action="@{/board/add}" th:object="${boardForm}" method="post" class="form">
+	            
+	            <div class="form-group">
+	                <label>新規投稿</label>
+	                <textarea th:field="*{text}" maxlength="255" class="post-textarea" placeholder="感想やおすすめの本を共有しよう（255文字以内、改行して複数行入力できます）"></textarea>
+	                <div th:if="${#fields.hasErrors('text')}" th:errors="*{text}" class="error"></div>
+	            </div>
+	            
+	            <button type="submit" class="btn-primary post-submit-btn">投稿する</button>
+	        </form>
+	    </div>
+
+    <div class="card timeline-card">
+        
+        <div class="timeline-header">
+            <h3>投稿一覧</h3>
+            
+            <div th:if="${successMessage != null}" class="inner-success-message">
+                <p class="alert-danger-text" th:text="${successMessage}"></p>
+            </div>
+        </div>
+
+        <div class="timeline-container">
+            
+            <div th:each="board : ${boardList}" class="post-item">
+                
+                <div class="post-header">
+                    <strong class="user-id" th:text="${board.userId}">ユーザーID</strong> 
+                    <span class="post-date" th:text="${#temporals.format(board.postDate, 'yyyy/MM/dd HH:mm')}">日時</span>
+                </div>
+                
+                <p class="post-text" th:text="${board.text}">投稿内容</p>
+
+                <div th:if="${board.userId == #authentication.name}" class="post-actions">
+                    <a th:href="@{/board/edit/{postId}(postId=${board.postId})}" class="edit-link">編集</a>
+                    
+                    <form th:action="@{/board/delete/{postId}(postId=${board.postId})}" method="post" class="delete-form">
+                        <input type="submit" value="削除" onclick="return confirm('本当に削除しますか？');" class="delete-button">
+                    </form>
+                </div>
+                
+            </div>
+
+            <p th:if="${#lists.isEmpty(boardList)}" class="empty-message">まだ投稿がありません。</p>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

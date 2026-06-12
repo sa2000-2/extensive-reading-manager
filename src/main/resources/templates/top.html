@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>多読管理</title>
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/top.css}">
+</head>
+<body class="main-body">
+
+    <header class="site-header">
+        <div class="header-container">
+            <h1 class="site-logo">多読管理</h1>
+            <nav class="header-nav">
+                <a th:href="@{/users/login}" class="nav-login">ログイン</a>
+                <a th:href="@{/users/register}" class="nav-register">アカウント登録</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="hero-container">
+            <h2 class="hero-title">読んだ語数を、あなたの自信に。</h2>
+            <p class="hero-lead">多読管理は、あなたの英語多読（Extensive Reading）の道のりを視覚化し<br>
+				目標達成をサポートする管理アプリです。</p>
+            <div class="hero-actions">
+                <a th:href="@{/users/register}" class="btn-hero-primary">今すぐ始める</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="main-container">
+
+        <section class="card intro-card">
+            <h3>英語多読（Extensive Reading）とは？</h3>
+            <div class="intro-content">
+                <p>「辞書を引かずに読める優しい本」を、「大量に」「楽しく」読む学習法です。<br>
+                日本語に訳さず英語を英語のまま理解する「英語脳」を育てるために、読んだ総語数の積み重ねが非常に重要な指標となります。</p>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <h3 class="section-title">多読管理の主な機能</h3>
+            
+            <div class="feature-grid">
+                
+                <div class="card feature-item">
+                    <div class="feature-icon">📊</div>
+                    <h4>読書記録 ＆ 進捗管理</h4>
+                    <p>読んだ日付、タイトル、語数をサッと記録。設定した目標語数に対する達成率をリアルタイムに視覚化します。</p>
+                </div>
+
+                <div class="card feature-item">
+                    <div class="feature-icon">🤖</div>
+                    <h4>AIおすすめ本 ＆ お気に入り</h4>
+                    <p>読みたい本のレベル、種類、ジャンルを選ぶとAIが次に読むべき最適な書籍を3冊厳選して提案します。</p>
+                </div>
+
+                <div class="card feature-item">
+                    <div class="feature-icon">💬</div>
+                    <h4>多読仲間との掲示板</h4>
+                    <p>本の感想やおすすめつぶやきを投稿。孤独になりがちな多読学習を、他の学習者と緩やかにつながることで継続させます。</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="card cta-card">
+            <h4>あなたの多読ライフを一歩先へ</h4>
+            <p>さあ、目標の語数に向かって最初の1冊を記録しましょう。</p>
+            <div class="cta-actions">
+                <a th:href="@{/users/register}" class="btn-primary center-submit-btn">アカウントを作成する</a>
+                <a th:href="@{/users/login}" class="cta-sub-link">すでにアカウントをお持ちの方はこちら（ログイン）</a>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 多読管理. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>

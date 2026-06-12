@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<meta charset="UTF-8">
+<title>多読管理</title>
+
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body class="main-body">
+
+<div class="main-container">
+
+    <div class="main-header">
+        <h2>多読管理</h2>
+        <p>
+            <span class="user-name" sec:authentication="principal.name">ゲスト</span> さん、こんにちは
+        </p>
+    </div>
+
+    <div class="card">
+
+        <h3>現在の読書状況</h3>
+
+        <p class="summary-text">
+            合計語数：
+            <span class="bold" th:text="${totalWords}">0</span> 語
+            /
+            目標：
+            <span class="bold" th:text="${targetWords}">0</span> 語
+        </p>
+
+        <p class="progress-text">
+            目標達成率：
+            <span class="bold" th:text="${#numbers.formatDecimal(progress, 1, 1)}">0.0</span> %
+        </p>
+
+        <div class="progress-bar">
+            <div class="progress-fill"
+                 th:style="'width:' + ${progress} + '%'">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h3>メニュー</h3>
+
+        <div class="menu-grid">
+
+            <a class="menu-item" th:href="@{/books/list}">読書管理</a>
+            <a class="menu-item" th:href="@{/recommend}">AIおすすめ</a>
+            <a class="menu-item" th:href="@{/board/list}">掲示板</a>
+            <a class="menu-item" th:href="@{/users/edit}">ユーザー設定</a>
+
+        </div>
+
+    </div>
+
+	<form class="logout-form" th:action="@{/logout}" method="post">
+	    <button type="submit" class="btn-logout">ログアウト</button>
+	</form>
+
+</div>
+
+</body>
+</html>
