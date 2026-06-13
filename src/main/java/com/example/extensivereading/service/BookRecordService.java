@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.extensivereading.dto.BookRecordForm;
 import com.example.extensivereading.entity.BookRecord;
+import com.example.extensivereading.entity.User;
 import com.example.extensivereading.repository.BookRecordRepository;
+import com.example.extensivereading.repository.UserRepository;
 
 /**
  * 読書管理機能に関する処理のServiceクラス
@@ -17,11 +19,24 @@ import com.example.extensivereading.repository.BookRecordRepository;
 @Service
 public class BookRecordService {
 	private final BookRecordRepository bookRecordRepository;
+	private final UserRepository userRepository;
 	
-	 public BookRecordService(BookRecordRepository bookRecordRepository) {
+	 public BookRecordService(BookRecordRepository bookRecordRepository, UserRepository userRepository) {
 	        this.bookRecordRepository = bookRecordRepository;
+	        this.userRepository = userRepository;
 	 }
 	 
+	 
+	 /**
+	     * ユーザー情報のデータベースから目標語数を取得
+	     * @param userId ユーザーID
+	     * @return ユーザーの目標語数
+	     */
+	 public int getTargetWords(String userId) {
+		 User user = userRepository.findById(userId).orElseThrow();
+		 int targetWords = user.getTargetWords();
+		 return targetWords;
+	 }
 
 	 /**
 	     * 読書記録の登録を実行する。

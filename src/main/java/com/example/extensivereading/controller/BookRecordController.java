@@ -16,28 +16,33 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.extensivereading.dto.BookRecordForm;
 import com.example.extensivereading.entity.BookRecord;
-import com.example.extensivereading.entity.User;
-import com.example.extensivereading.repository.UserRepository;
 import com.example.extensivereading.security.UserDetailsImpl;
 import com.example.extensivereading.service.BookRecordService;
 
+/**
+ * 読書記録に関するリクエストを制御するControllerクラス。
+ * 画面表示(GET)と登録、変更、削除処理(POST)を管理し適切な画面へ誘導する。
+ */
 @Controller
 @RequestMapping("/books")
 public class BookRecordController {
 	private final BookRecordService bookRecordService;
-    private final UserRepository userRepository;
 
-    public BookRecordController(BookRecordService bookRecordService, UserRepository userRepository) {
+    public BookRecordController(BookRecordService bookRecordService) {
         this.bookRecordService = bookRecordService;
-        this.userRepository = userRepository;
     }
     
 
+    /**
+     * 読書記録のリストを表示する
+     * @param userDetails ログイン中のアカウント情報の箱
+     * @param model HTMLに表示する読書記録のデータを運ぶためのモデル箱
+     * @return 読書記録のリスト画面のテンプレート名
+     */
     @GetMapping("/list")
     public String showList(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
         String userId = userDetails.getUsername();
-        User user = userRepository.findById(userId).orElseThrow();
-        int targetWords = user.getTargetWords();
+        int targetWords = bookRecordService.getTargetWords(userId);
         
         List<BookRecord> records = bookRecordService.getAllRecords(userId);
         int totalWords = bookRecordService.calculateTotalWords(records);
@@ -51,6 +56,12 @@ public class BookRecordController {
         return "bookRecordList";
     }
 
+    
+    /**
+     * 読書記録の登録画面を表示する
+     * @param model HTMLに表示するデータを運ぶためのモデル箱
+     * @return 読書記録登録画面のテンプレート名
+     */
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("bookRecordForm", new BookRecordForm());
@@ -58,6 +69,14 @@ public class BookRecordController {
     }
 
 
+    /**
+     * 読書記録を登録する
+     * @param userDetails ログイン中のアカウント情報の箱
+     * @param bookRecordForm 読書記録登録フォームに入力された情報をいれる箱
+     * @param bindingResult bookRecordFormで入力チェックをした結果　
+     * @param redirectAttributes リダイレクト用の成功メッセージをいれる箱
+     * @return 読書記録登録画面にリダイレクトするためのURL
+     */
     @PostMapping("/add")
     public String addRecord(@AuthenticationPrincipal UserDetailsImpl userDetails,
                             @Validated BookRecordForm bookRecordForm,
@@ -76,6 +95,13 @@ public class BookRecordController {
 }
     
 
+    /**
+     * 読書記録編集画面を表示する
+     * @param userDetails ログイン中のアカウント情報の箱
+     * @param recordId HTMLで指定された本のID
+     * @param model HTMLに表示するデータを運ぶためのモデル箱
+     * @return 読書記録変更画面のテンプレート名、またはエラー時にリスト画面へリダイレクトするURL
+     */
     @GetMapping("/edit/{recordId}")
     public String showEditForm(@AuthenticationPrincipal UserDetailsImpl userDetails, 
                                @PathVariable Integer recordId, 
@@ -98,6 +124,14 @@ public class BookRecordController {
     }
 
 
+    /**
+     * 読書記録を編集する
+     * @param userDetails ログイン中のアカウント情報の箱
+     * @param bookRecordForm 読書記録登録フォームに入力された変更情報をいれる箱
+     * @param bindingResult 入力チェックをした結果　
+     * @param redirectAttributes リダイレクト用のメッセージをいれる箱
+     * @return 読書記録リスト画面にリダイレクトするためのURL
+     */
     @PostMapping("/update")
     public String editRecord(@AuthenticationPrincipal UserDetailsImpl userDetails,
                              @Validated BookRecordForm bookRecordForm,
@@ -118,6 +152,13 @@ public class BookRecordController {
         return "redirect:/books/list";
     }
 
+    /**
+     * 読書記録の削除をする
+     * @param userDetails ログイン中のアカウント情報の箱
+     * @param recordId HTMLで指定された本のID
+     * @param redirectAttributes リダイレクト用のメッセージをいれる箱
+     * @return 読書記録リスト画面にリダイレクトするためのURL
+     */
     @PostMapping("/delete/{recordId}")
     public String deleteRecord(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                @PathVariable Integer recordId, 
