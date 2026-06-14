@@ -15,6 +15,10 @@ import com.example.extensivereading.dto.RecommendResponse;
 import com.example.extensivereading.entity.Favorite;
 import com.example.extensivereading.repository.FavoriteRepository;
 
+/**
+* AIおすすめ本表示機能に関する処理のServiceクラス
+* AIとの通信や返答の処理、保存、削除を担当する
+*/
 @Service
 public class RecommendService {
 
@@ -26,6 +30,14 @@ public class RecommendService {
         this.favoriteRepository = favoriteRepository;
     }
 
+    
+    /**
+     * 選択された条件で出力させたAIのおすすめ本の提案リストを取得する
+     * @param level ユーザーが選択したレベル
+     * @param type ユーザーが選択した本の種類
+     * @param genre ユーザーが選択したジャンル
+     * @return おすすめ本のリスト
+     */
     public List<RecommendResponse> executeRecommend(String level, String type, String genre) {
         
         // 1. プロンプトの準備（三項演算子の代入を整理し、テキストブロックで統一）
@@ -50,7 +62,7 @@ public class RecommendService {
                   - レベル9: 本格的な文学作品、難解な古典
                 """.formatted(level);
 
-        // 変数名を text から promptText に修正
+    
         String promptText = """
                 あなたは英語多読の専門家です。英語の多読をしている人におすすめの洋書を【厳密に3冊】厳選してください。
                 
@@ -72,8 +84,8 @@ public class RecommendService {
                   {"title": "本のタイトル", "author": "著者名", "publisher": "シリーズ名または出版社名", "summary": "日本語あらすじとおすすめ理由"}
                 ]
                 """.formatted(typeInstruction, genre);
+ 
 
-        // 2. 魔法のコンバーター（JSONを自動でJavaのList<RecommendResponse>に変換）
         BeanOutputConverter<List<RecommendResponse>> converter = 
             new BeanOutputConverter<>(new ParameterizedTypeReference<List<RecommendResponse>>() {});
 
@@ -88,10 +100,12 @@ public class RecommendService {
         return converter.convert(responseText);
     }
 
-    // =========================================================
-    // 以下のデータベース保存・削除のロジックは一切変更なし
-    // =========================================================
-
+  
+    /**
+     * おすすめ本をお気に入り登録する
+     * @param userId ユーザーID
+     * @param form お気に入り登録するおすすめ本のデータの箱
+     */
     @Transactional
     public void saveFavorite(String userId, FavoriteForm form) {
         Favorite favorite = new Favorite();
@@ -104,10 +118,21 @@ public class RecommendService {
         favoriteRepository.save(favorite);
     }
 
+    /**
+     * お気に入り登録したおすすめ本のリストを取得する
+     * @param userId ユーザーID
+     * @return データベースから取得したユーザーIDに紐づいたおすすめ本のデータのリスト
+     */
     public List<Favorite> getFavorites(String userId) {
         return favoriteRepository.findByUserIdOrderBySavedDateDesc(userId);
     }
 
+    
+    /**
+     * お気に入り登録したおすすめ本を削除する
+     * @param userId ユーザーID
+     * @param favoriteId お気に入り登録ID
+     */
     @Transactional
     public void deleteFavorite(String userId, Integer favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId)
