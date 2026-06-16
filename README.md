@@ -1,8 +1,17 @@
+
 # extensive-reading-manager
 
 ## アプリケーション概要（About）
 英語の多読において高い壁となる「100万語達成」を後押しするための読書管理Webアプリケーションです。
 読書記録・進捗の可視化だけでなく「コミュニティ機能（掲示板）」や「AIレコメンド機能」によって挫折しやすい長期間の学習を多角的にサポートします。
+
+## デモ
+
+ログイン → 読書記録登録
+<img width="1152" height="648" alt="loginbook" src="https://github.com/user-attachments/assets/493c2f73-d079-487d-883a-337eeb373cdd" />
+
+AIおすすめ → 掲示板投稿
+<img width="1152" height="648" alt="aiboard" src="https://github.com/user-attachments/assets/12e11373-b2de-4399-9ed8-f0a92f43e366" />
 
 
 ## 技術選定の背景と開発プロセス
@@ -194,6 +203,7 @@ graph TD
 
     Browser --> Security
     Security --> Controller
+
     Controller --> Service
     Service --> Repository
     Repository --> DB
@@ -205,3 +215,7 @@ graph TD
 
 Controllerでは画面入力をDTO(Form)として受け取りService層でバリデーションや業務処理を実施した後Entityへ変換しています。<br>
 これにより画面入力とデータベース構造を分離し、Mass Assignment対策や保守性向上を実現しています。
+
+
+
+
