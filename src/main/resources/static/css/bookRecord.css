@@ -7,6 +7,22 @@
 .sub-text { font-size: 14px; color: #64748b; margin-top: 0; margin-bottom: 24px; }
 .status { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; font-size: 15px; color: #334155; }
 
+/* --- 1. プログレスバー --- */
+.progress-bar {
+    width: 100%;
+    height: 18px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+.progress-fill {
+    height: 100%;
+    background: #1e3a8a;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
 /* 読書履歴テーブル */
 .book-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 20px; line-height: 1.5; }
 .book-table th { background-color: #f8fafc; color: #475569; font-weight: bold; padding: 16px 20px; border-bottom: 2px solid #e2e8f0; font-size: 13px; letter-spacing: 0.05em; }

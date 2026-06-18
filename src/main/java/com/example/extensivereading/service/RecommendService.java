@@ -91,7 +91,6 @@ public class RecommendService {
 
         String formatInstructions = converter.getFormat();
 
-        // 3. Spring AIを使った通信
         String responseText = chatClient.prompt()
                 .user(promptText + "\n\n" + formatInstructions)
                 .call()

@@ -14,7 +14,7 @@ import com.example.extensivereading.repository.UserRepository;
 
 /**
  * ユーザー登録に関する処理のServiceクラス
- * IDを整える、パスワードのハッシュ化、重複チェック等のビジネスロジックを行う
+ * IDを整える、パスワードのハッシュ化、重複チェック等の登録処理を担当する
  */
 @Service
 public class UserService {
@@ -29,7 +29,7 @@ public class UserService {
     
 	/**
      * 新規ユーザーを登録
-     * * @param form 入力チェック済みの画面から受け取ったユーザー登録情報
+     * @param form 入力チェック済みの画面から受け取ったユーザー登録情報
      * @throws IllegalArgumentException IDが既にデータベースに存在する場合に発生
      */
     @Transactional
