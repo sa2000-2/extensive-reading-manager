@@ -19,7 +19,7 @@
 	<name>extensive-reading-manager</name>
 	<description>Extensive Reading Manager</description>
 	<properties>
-		<java.version>25</java.version>
+		<java.version>21</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
