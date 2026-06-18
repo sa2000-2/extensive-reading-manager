@@ -5,8 +5,7 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 
-
-RUN yum install -y tar
+RUN yum install -y tar gzip
 
 RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
