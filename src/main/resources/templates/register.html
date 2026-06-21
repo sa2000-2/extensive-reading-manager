@@ -28,13 +28,13 @@
         </label>
 
         <label>
-            ユーザーID
+            ユーザーID（半角英数字のみ、4～36文字）
             <input type="text" th:field="*{id}">
             <span class="field-error" th:errors="*{id}"></span>
         </label>
 
         <label>
-            パスワード
+            パスワード（半角英数字および一部の記号のみ、8～64文字）
             <input type="password" th:field="*{password}">
             <span class="field-error" th:errors="*{password}"></span>
         </label>
