@@ -113,7 +113,7 @@ public class BoardServiceTest {
 		b1.setText("自分の投稿");
 		mockList.add(b1);
 		
-		when(boardRepository.findByUserId(userId)).thenReturn(mockList);
+		when(boardRepository.findByUserIdOrderByPostDateDesc(userId)).thenReturn(mockList);
 		
 		List<Board> actualList = boardService.getBoardList(userId);
 
