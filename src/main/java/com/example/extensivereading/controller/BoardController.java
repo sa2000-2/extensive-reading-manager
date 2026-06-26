@@ -20,138 +20,135 @@ import com.example.extensivereading.security.UserDetailsImpl;
 import com.example.extensivereading.service.BoardService;
 
 /**
- * 投稿記録に関するリクエストを制御するControllerクラス。
- * 画面表示(GET)と登録、変更、削除処理(POST)を管理し適切な画面へ誘導する。
+ * 掲示板投稿に関するリクエストを処理するControllerクラス。
+ * 投稿一覧・編集画面の表示、および投稿の登録・更新・削除を担当する。
  */
 @Controller
 @RequestMapping("/board")
 public class BoardController {
 	private final BoardService boardService;
 
-    public BoardController(BoardService boardService) {
-        this.boardService = boardService;
-    }
-    
+	public BoardController(BoardService boardService) {
+		this.boardService = boardService;
+	}
 
-    /**
-     * 投稿リストを表示する
-     * @param model 全投稿リストと空の投稿フォーム箱を運ぶためのモデル箱
-     * @return 掲示板画面のテンプレート名
-     */
-    @GetMapping("/list")
-    public String showList(Model model) {
-    	
-        List<Board> boardList = boardService.getAllBoardList();
-        model.addAttribute("boardList", boardList); 
-        
-        // 新規投稿用の空のDTO
-        model.addAttribute("boardForm", new BoardForm());
-        
-        return "boardList";
-    }
+	/**
+	 * 投稿リストを表示する。
+	 * @param model ビューへ投稿一覧と空の投稿フォームを渡すためのModelオブジェクト
+	 * @return 掲示板画面のテンプレート名
+	 */
+	@GetMapping("/list")
+	public String showList(Model model) {
 
+		List<Board> boardList = boardService.getAllBoardList();
+		model.addAttribute("boardList", boardList);
+		model.addAttribute("boardForm", new BoardForm());
 
-    /**
-     * 投稿を登録する
-     * @param userDetails ログイン中のユーザー情報
-     * @param boardForm 入力された投稿フォーム箱
-     * @param bindingResult 入力チェックの結果
-     * @param model 全投稿リストを運ぶためのモデル箱
-     * @param redirectAttributes リダイレクトの時にメッセージを運ぶための箱
-     * @return 掲示板画面のテンプレート名、または掲示板画面にとぶためのURL
-     */
-    @PostMapping("/add")
-    public String addBoard(@AuthenticationPrincipal UserDetailsImpl userDetails,
-    	    @Validated BoardForm boardForm,
-    	    BindingResult bindingResult,
-    	    Model model,RedirectAttributes redirectAttributes) {
+		return "boardList";
+	}
 
-        if (bindingResult.hasErrors()) {
-            List<Board> boardList = boardService.getAllBoardList();
-            model.addAttribute("boardList", boardList);
-            return "boardList"; 
-        }
+	/**
+	 * 投稿を登録する。
+	 * @param userDetails 認証済みのユーザー情報
+	 * @param boardForm 投稿フォームに入力されたデータ
+	 * @param bindingResult 入力値のバリデーション結果
+	 * @param model ビューへ投稿一覧を渡すためのModelオブジェクト
+	 * @param redirectAttributes リダイレクト先へメッセージを渡すためのRedirectAttributes
+	 * @return 掲示板画面のテンプレート名、または掲示板画面へリダイレクトするURL
+	 */
+	@PostMapping("/add")
+	public String addBoard(@AuthenticationPrincipal UserDetailsImpl userDetails,
+			@Validated BoardForm boardForm,
+			BindingResult bindingResult,
+			Model model, RedirectAttributes redirectAttributes) {
 
-        boardService.boardRegister(userDetails.getUsername(), boardForm);
+		if (bindingResult.hasErrors()) {
+			List<Board> boardList = boardService.getAllBoardList();
+			model.addAttribute("boardList", boardList);
+			return "boardList";
+		}
 
-        redirectAttributes.addFlashAttribute("successMessage", "投稿しました。");
-        return "redirect:/board/list";
+		boardService.boardRegister(userDetails.getUsername(), boardForm);
 
-}
-    /**
-     * 投稿の変更画面を表示する
-     * @param userDetails ログイン中のユーザー情報
-     * @param postId 投稿ID
-     * @param model HTMLにデータを運ぶためのモデル箱
-     * @return 編集画面のテンプレート名、または掲示板画面にとぶためのURL
-     */
-    @GetMapping("/edit/{postId}")
-    public String showEditForm(@AuthenticationPrincipal UserDetailsImpl userDetails, 
-                               @PathVariable Integer postId, 
-                               Model model) {
-        try {
-            Board board = boardService.getBoard(userDetails.getUsername(), postId);
+		redirectAttributes.addFlashAttribute("successMessage", "投稿しました。");
+		return "redirect:/board/list";
 
-            BoardForm form = new BoardForm();
-            form.setPostId(board.getPostId());
-            form.setText(board.getText());
+	}
 
-            model.addAttribute("boardForm", form);
-            return "boardEdit"; 
-            
-        } catch (IllegalArgumentException | AccessDeniedException e) {
-            return "redirect:/board/list";
-        }
-    }
+	/**
+	 * 投稿の変更画面を表示する。
+	 * @param userDetails 認証済みのユーザー情報
+	 * @param postId 編集対象の投稿ID
+	 * @param model ビューへ編集対象の投稿を渡すためのModelオブジェクト
+	 * @return 投稿編集画面のテンプレート名、または掲示板画面へリダイレクトするURL
+	 */
+	@GetMapping("/edit/{postId}")
+	public String showEditForm(@AuthenticationPrincipal UserDetailsImpl userDetails,
+			@PathVariable Integer postId,
+			Model model) {
+		try {
+			Board board = boardService.getBoard(userDetails.getUsername(), postId);
 
-    /**
-     * 投稿を変更する
-     * @param userDetails ログイン中のユーザー情報
-     * @param boardForm 入力された投稿フォーム箱
-     * @param bindingResult 入力チェックの結果
-     * @param model HTMLにデータを運ぶためのモデル箱
-     * @param redirectAttributes リダイレクトの時にメッセージを運ぶための箱
-     * @return 編集画面のテンプレート名、または掲示板画面にとぶためのURL
-     */
-    @PostMapping("/update")
-    public String editBoard(@AuthenticationPrincipal UserDetailsImpl userDetails,
-    	    @Validated BoardForm boardForm,
-    	    BindingResult bindingResult,
-    	    Model model,RedirectAttributes redirectAttributes) {
+			BoardForm form = new BoardForm();
+			form.setPostId(board.getPostId());
+			form.setText(board.getText());
 
-    	if (bindingResult.hasErrors()) {
-    	    model.addAttribute("boardForm", boardForm);
-    	    return "boardEdit";
-    	}
+			model.addAttribute("boardForm", form);
+			return "boardEdit";
 
-        try {
-            boardService.updateBoard(userDetails.getUsername(), boardForm);
-        } catch (IllegalArgumentException | AccessDeniedException e) {
-            return "redirect:/board/list";
-        }
+		} catch (IllegalArgumentException | AccessDeniedException e) {
+			return "redirect:/board/list";
+		}
+	}
 
-        redirectAttributes.addFlashAttribute("successMessage", "投稿を更新しました。");
-        return "redirect:/board/list";
-    }
+	/**
+	 * 投稿を変更する。
+	 * @param userDetails 認証済みのユーザー情報
+	 * @param boardForm 編集フォームに入力された投稿データ
+	 * @param bindingResult 入力値のバリデーション結果
+	 * @param model ビューへ投稿情報を渡すためのModelオブジェクト
+	 * @param redirectAttributes リダイレクト先へメッセージを渡すためのRedirectAttributes
+	 * @return 投稿編集画面のテンプレート名、または掲示板画面へリダイレクトするURL
+	 */
+	@PostMapping("/update")
+	public String editBoard(@AuthenticationPrincipal UserDetailsImpl userDetails,
+			@Validated BoardForm boardForm,
+			BindingResult bindingResult,
+			Model model, RedirectAttributes redirectAttributes) {
 
-    /**
-     * 投稿を削除する
-     * @param userDetails ログイン中のユーザー情報
-     * @param postId 投稿ID
-     * @param redirectAttributes リダイレクトの時にメッセージを運ぶための箱
-     * @return 掲示板画面にとぶためのURL
-     */
-    @PostMapping("/delete/{postId}")
-    public String deleteBoard(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                               @PathVariable Integer postId, 
-                               RedirectAttributes redirectAttributes) {
-        try {
-            boardService.deleteBoard(userDetails.getUsername(), postId);
-        } catch (IllegalArgumentException | AccessDeniedException e) {
-            return "redirect:/board/list";
-        }
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("boardForm", boardForm);
+			return "boardEdit";
+		}
 
-        redirectAttributes.addFlashAttribute("successMessage", "投稿を削除しました。");
-        return "redirect:/board/list";
-    }
+		try {
+			boardService.updateBoard(userDetails.getUsername(), boardForm);
+		} catch (IllegalArgumentException | AccessDeniedException e) {
+			return "redirect:/board/list";
+		}
+
+		redirectAttributes.addFlashAttribute("successMessage", "投稿を更新しました。");
+		return "redirect:/board/list";
+	}
+
+	/**
+	 * 投稿を削除する。
+	 * @param userDetails 認証済みのユーザー情報
+	 * @param postId 削除対象の投稿ID
+	 * @param redirectAttributes リダイレクト先へメッセージを渡すためのRedirectAttributes
+	 * @return 掲示板画面へリダイレクトするURL
+	 */
+	@PostMapping("/delete/{postId}")
+	public String deleteBoard(@AuthenticationPrincipal UserDetailsImpl userDetails,
+			@PathVariable Integer postId,
+			RedirectAttributes redirectAttributes) {
+		try {
+			boardService.deleteBoard(userDetails.getUsername(), postId);
+		} catch (IllegalArgumentException | AccessDeniedException e) {
+			return "redirect:/board/list";
+		}
+
+		redirectAttributes.addFlashAttribute("successMessage", "投稿を削除しました。");
+		return "redirect:/board/list";
+	}
 }

@@ -21,7 +21,7 @@ import com.example.extensivereading.service.BookRecordService;
 
 /**
  * 読書記録に関するリクエストを制御するControllerクラス。
- * 画面表示(GET)と登録、変更、削除処理(POST)を管理し適切な画面へ誘導する。
+ * 一覧・登録・編集画面の表示、および読書記録の登録・更新・削除を担当する。
  */
 @Controller
 @RequestMapping("/books")
@@ -34,9 +34,9 @@ public class BookRecordController {
     
 
     /**
-     * 読書記録のリストを表示する
-     * @param userDetails ログイン中のアカウント情報の箱
-     * @param model HTMLに表示する読書記録のデータを運ぶためのモデル箱
+     * 読書記録のリストを表示する。
+     * @param userDetails 認証済みのユーザー情報
+     * @param model ビューへ読書記録一覧を渡すためのModelオブジェクト
      * @return 読書記録のリスト画面のテンプレート名
      */
     @GetMapping("/list")
@@ -58,8 +58,8 @@ public class BookRecordController {
 
     
     /**
-     * 読書記録の登録画面を表示する
-     * @param model HTMLに表示するデータを運ぶためのモデル箱
+     * 読書記録の登録画面を表示する。
+     * @param model ビューへ空のフォームオブジェクトを渡すためのModelオブジェクト
      * @return 読書記録登録画面のテンプレート名
      */
     @GetMapping("/add")
@@ -70,12 +70,12 @@ public class BookRecordController {
 
 
     /**
-     * 読書記録を登録する
-     * @param userDetails ログイン中のアカウント情報の箱
-     * @param bookRecordForm 読書記録登録フォームに入力された情報をいれる箱
-     * @param bindingResult bookRecordFormで入力チェックをした結果　
-     * @param redirectAttributes リダイレクト用の成功メッセージをいれる箱
-     * @return 読書記録登録画面にリダイレクトするためのURL
+     * 読書記録を登録する。
+     * @param userDetails 認証済みのユーザー情報
+     * @param bookRecordForm 読書記録登録フォームに入力されたデータ
+     * @param bindingResult 入力値のバリデーション結果
+     * @param redirectAttributes リダイレクト先へ成功メッセージを渡すためのRedirectAttributes
+     * @return 読書記録登録画面にリダイレクトするURL
      */
     @PostMapping("/add")
     public String addRecord(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -96,10 +96,10 @@ public class BookRecordController {
     
 
     /**
-     * 読書記録編集画面を表示する
-     * @param userDetails ログイン中のアカウント情報の箱
-     * @param recordId HTMLで指定された本のID
-     * @param model HTMLに表示するデータを運ぶためのモデル箱
+     * 読書記録編集画面を表示する。
+     * @param userDetails 認証済みのユーザー情報
+     * @param recordId 編集対象の読書記録ID
+     * @param model ビューへ編集対象の読書記録を渡すためのModelオブジェクト
      * @return 読書記録変更画面のテンプレート名、またはエラー時にリスト画面へリダイレクトするURL
      */
     @GetMapping("/edit/{recordId}")
@@ -125,12 +125,12 @@ public class BookRecordController {
 
 
     /**
-     * 読書記録を編集する
-     * @param userDetails ログイン中のアカウント情報の箱
-     * @param bookRecordForm 読書記録登録フォームに入力された変更情報をいれる箱
-     * @param bindingResult 入力チェックをした結果　
-     * @param redirectAttributes リダイレクト用のメッセージをいれる箱
-     * @return 読書記録リスト画面にリダイレクトするためのURL
+     * 読書記録を編集する。
+     * @param userDetails 認証済みのユーザー情報
+     * @param bookRecordForm 編集フォームに入力された読書記録の情報
+     * @param bindingResult 入力値のバリデーション結果
+     * @param redirectAttributes リダイレクト先へメッセージを渡すためのRedirectAttributes
+     * @return 読書記録リスト画面にリダイレクトするURL
      */
     @PostMapping("/update")
     public String editRecord(@AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -153,11 +153,11 @@ public class BookRecordController {
     }
 
     /**
-     * 読書記録の削除をする
-     * @param userDetails ログイン中のアカウント情報の箱
-     * @param recordId HTMLで指定された本のID
-     * @param redirectAttributes リダイレクト用のメッセージをいれる箱
-     * @return 読書記録リスト画面にリダイレクトするためのURL
+     * 読書記録の削除をする。
+     * @param userDetails 認証済みのユーザー情報
+     * @param recordId 削除対象の読書記録ID
+     * @param redirectAttributes リダイレクト先へメッセージを渡すためのRedirectAttributes
+     * @return 読書記録リスト画面にリダイレクトするURL
      */
     @PostMapping("/delete/{recordId}")
     public String deleteRecord(@AuthenticationPrincipal UserDetailsImpl userDetails,

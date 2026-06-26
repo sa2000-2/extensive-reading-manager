@@ -14,59 +14,73 @@ import com.example.extensivereading.entity.User;
  */
 public class UserDetailsImpl implements UserDetails {
 
-  
-    private final User user;
+	/**
+	 * Userエンティティをもとに認証用ユーザー情報を生成する。
+	 * @param user 認証対象のユーザー情報
+	 */
+	private final User user;
 
-    public UserDetailsImpl(User user) {
-        this.user = user;
-    }
-    
-   /**
-    * ログインIDを返す。
-    * @return ユーザーID
-    */
-    @Override
-    public String getUsername() {
-        return user.getId(); 
-    }
+	public UserDetailsImpl(User user) {
+		this.user = user;
+	}
 
-   /**
-    * パスワードを返す。
-    * @return ハッシュ化済みパスワード
-    */
-    @Override
-    public String getPassword() {
-        return user.getPasswordHash(); 
-    }
+	/**
+	* ログインIDを返す。
+	* @return ユーザーID
+	*/
+	@Override
+	public String getUsername() {
+		return user.getId();
+	}
 
-    /**
-     * 権限者リストを返す
-     * @return 権限者リスト（ユーザー登録した人全員）
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.createAuthorityList("ROLE_USER");
-    }
+	/**
+	* パスワードを返す。
+	* @return ハッシュ化済みパスワード
+	*/
+	@Override
+	public String getPassword() {
+		return user.getPasswordHash();
+	}
 
-    /**
-     * 今回は未使用の為すべて有効にする
-     * @return　true
-     */
-    @Override
-    public boolean isAccountNonExpired() { return true; }
-    @Override
-    public boolean isAccountNonLocked() { return true; }
-    @Override
-    public boolean isCredentialsNonExpired() { return true; }
-    @Override
-    public boolean isEnabled() { return true; }
+	/**
+	 * ユーザーに付与する権限を返す。
+	 * @return 権限情報（ROLE_USER）
+	 */
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return AuthorityUtils.createAuthorityList("ROLE_USER");
+	}
 
-    /**
-     * ユーザー名を返す。
-     * @return ユーザー名
-     */
-    public String getName() {
-        return this.user.getName();
-    }
+	/**
+	 * アカウントの有効状態を返す。
+	 * 期限切れ・ロック・無効化を管理しないため、常にtrueを返す。
+	 * @return 常にtrue
+	 */
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+
+	/**
+	 * ユーザー名を返す。
+	 * @return ユーザー名
+	 */
+	public String getName() {
+		return this.user.getName();
+	}
 }
-

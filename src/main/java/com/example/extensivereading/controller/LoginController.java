@@ -15,54 +15,52 @@ import com.example.extensivereading.security.UserDetailsImpl;
 import com.example.extensivereading.service.BookRecordService;
 
 /**
- * ログインに関するリクエストを制御するControllerクラス。
- * ログイン画面の表示(GET)およびログイン後のメイン画面表示(GET)を管理する。
+ * ログイン画面およびログイン後のメイン画面表示を担当するControllerクラス。
  */
 @Controller
 @RequestMapping("/users")
 public class LoginController {
 	private final BookRecordService bookRecordService;
-    private final UserRepository userRepository;
-    
-    public LoginController(BookRecordService bookRecordService, UserRepository userRepository) {
-        this.bookRecordService = bookRecordService;
-        this.userRepository = userRepository;
-    }
-	
+	private final UserRepository userRepository;
+
+	public LoginController(BookRecordService bookRecordService, UserRepository userRepository) {
+		this.bookRecordService = bookRecordService;
+		this.userRepository = userRepository;
+	}
+
 	/**
-     * ログイン画面を表示する。
-     * *@return ログイン画面のテンプレート名 
-     */
+	 * ログイン画面を表示する。
+	 * @return ログイン画面のテンプレート名 
+	 */
 	@GetMapping("/login")
 	public String login() {
 		return "login";
 	}
-	
+
 	/**
-     * ログイン成功後のメイン画面を表示する。
-     * * @param userDetails 認証済みのユーザー情報
-     * @param model HTML表示用にデータを格納するモデル
-     * @return メイン画面のテンプレート名
-     * @throws IllegalStateException データベースに該当するユーザーが存在しない場合に発生
-     */
+	 * ログイン成功後のメイン画面を表示する。
+	 * @param userDetails 認証済みのユーザー情報
+	 * @param model ビューへ表示データを渡すためのModelオブジェクト
+	 * @return メイン画面のテンプレート名
+	 * @throws IllegalStateException 認証済みユーザーの情報がデータベースに存在しない場合
+	 */
 	@GetMapping("/main")
-    public String main(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-        String userId = userDetails.getUsername();
-        User user = userRepository.findById(userId)
-        		.orElseThrow(() ->
-        		new IllegalStateException("ユーザー情報が存在しません"));
-        
-        int targetWords = user.getTargetWords();
+	public String main(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
+		String userId = userDetails.getUsername();
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new IllegalStateException("ユーザー情報が存在しません"));
 
-        List<BookRecord> records = bookRecordService.getAllRecords(userId);
-        int totalWords = bookRecordService.calculateTotalWords(records);
-        double progress = bookRecordService.calculateProgressPercentage(totalWords, targetWords);
+		int targetWords = user.getTargetWords();
 
-        model.addAttribute("totalWords", totalWords);
-        model.addAttribute("targetWords", targetWords);
-        model.addAttribute("progress", progress);
+		List<BookRecord> records = bookRecordService.getAllRecords(userId);
+		int totalWords = bookRecordService.calculateTotalWords(records);
+		double progress = bookRecordService.calculateProgressPercentage(totalWords, targetWords);
 
-        return "main";
-    }
+		model.addAttribute("totalWords", totalWords);
+		model.addAttribute("targetWords", targetWords);
+		model.addAttribute("progress", progress);
+
+		return "main";
+	}
 
 }
