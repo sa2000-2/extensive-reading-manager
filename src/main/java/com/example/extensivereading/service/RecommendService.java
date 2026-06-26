@@ -24,6 +24,37 @@ public class RecommendService {
 
     private final ChatClient chatClient;
     private final FavoriteRepository favoriteRepository;
+    private static final List<String> ALLOWED_TYPES = List.of("Graded Readers", "General Books");
+    private static final List<String> ALLOWED_LEVELS = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9");
+    
+    
+    /**
+     * AI推薦で許可するジャンル一覧
+     * リクエスト改ざんによる不正なジャンル指定を防ぐために使用する。
+     */
+    public enum AllowedGenre {
+        Mystery, Fantasy, Romance, SciFi, Action, NonFiction;
+
+    	
+    	/**
+    	 * 指定されたジャンルが許可リストに含まれているか判定する。
+    	 *
+    	 * @param genre ユーザーが選択したジャンル
+    	 * @return 許可されていない場合 true
+    	 */
+        public static boolean isInvalid(String genre) {
+        	
+        	if (genre == null || genre.isBlank()) {
+                return true;
+            }
+        	
+            String cleanGenre = genre.replace("-", "").trim();
+            for (AllowedGenre g : values()) {
+                if (g.name().equalsIgnoreCase(cleanGenre)) return false;
+            }
+            return true;
+        }
+    }
 
     public RecommendService(ChatClient.Builder chatClientBuilder, FavoriteRepository favoriteRepository) {
         this.chatClient = chatClientBuilder.build();
@@ -39,8 +70,19 @@ public class RecommendService {
      * @return おすすめ本のリスト
      */
     public List<RecommendResponse> executeRecommend(String level, String type, String genre) {
+    	
+    	if (level == null || !ALLOWED_LEVELS.contains(level.trim())) {
+            throw new IllegalArgumentException("不正なレベルが選択されました。");
+        }
+
+        if (type == null || !ALLOWED_TYPES.contains(type.trim())) {
+            throw new IllegalArgumentException("不正な書籍タイプが選択されました。");
+        }
+
+        if (AllowedGenre.isInvalid(genre)) {
+            throw new IllegalArgumentException("不正なジャンルが選択されました。");
+        }
         
-        // 1. プロンプトの準備（三項演算子の代入を整理し、テキストブロックで統一）
         String typeInstruction = type.equals("Graded Readers") ?
                 """
                 * 書籍タイプ: 多読用書籍（Graded Readers）
@@ -72,16 +114,17 @@ public class RecommendService {
                 
                 【出力ルール】
                 1. 選択されたレベル基準に【厳格に一致する本】を、希望ジャンルから重複なく3冊選ぶこと。
-                2. あらすじ（summary）は、以下のフォーマットのように、1行目にあらすじ、2行目におすすめの理由を記述し、必ず間に改行を入れること。
-                   【あらすじ】〜〜〜（100文字程度）
-                   【おすすめ理由】〜〜〜（100文字程度）
-                3. レスポンスは、必ず以下のJSONフォーマット配列のみで返却し、余計な挨拶やマークダウンは一切含めないこと。
-                4. 出版社（publisher）には、「Cambridge University book」のような曖昧な名称は絶対に避け、特に多読用書籍（Graded Readers）の場合は『Cambridge English Readers』や『Oxford Bookworms』などの【正確なシリーズ名・レーベル名】を記述すること。一般書の場合は『Penguin Books』などの正式な出版社名を記述すること。
+                2. あらすじ（summary）は、日本語で100文字程度で記述すること。
+                3. おすすめの理由（reason）は、日本語で100文字程度で記述すること。
+                4. レスポンスは、必ず以下のJSONフォーマット配列のみで返却し、余計な挨拶やマークダウンは一切含めないこと。
+                5. 出版社（publisher）には、「Cambridge University book」のような曖昧な名称は絶対に避け、
+                特に多読用書籍（Graded Readers）の場合は『Cambridge English Readers』や『Oxford Bookworms』などの
+                【正確なシリーズ名・レーベル名】を記述すること。一般書の場合は『Penguin Books』などの正式な出版社名を記述すること。
                 
                 [
-                  {"title": "本のタイトル", "author": "著者名", "publisher": "シリーズ名または出版社名", "summary": "日本語あらすじとおすすめ理由"},
-                  {"title": "本のタイトル", "author": "著者名", "publisher": "シリーズ名または出版社名", "summary": "日本語あらすじとおすすめ理由"},
-                  {"title": "本のタイトル", "author": "著者名", "publisher": "シリーズ名または出版社名", "summary": "日本語あらすじとおすすめ理由"}
+                  {"title": "本のタイトル", "author": "著者名", "publisher": "シリーズ名または出版社名", "summary": "日本語あらすじ", "reason": "日本語のおすすめ理由"},
+                  {"title": "本のタイトル", "author": "著者名", "publisher": "シリーズ名または出版社名", "summary": "日本語あらすじ", "reason": "日本語のおすすめ理由"},
+                  {"title": "本のタイトル", "author": "著者名", "publisher": "シリーズ名または出版社名", "summary": "日本語あらすじ", "reason": "日本語のおすすめ理由"}
                 ]
                 """.formatted(typeInstruction, genre);
  
@@ -90,13 +133,61 @@ public class RecommendService {
             new BeanOutputConverter<>(new ParameterizedTypeReference<List<RecommendResponse>>() {});
 
         String formatInstructions = converter.getFormat();
+        String responseText;
+        
+        try {
+            responseText = chatClient.prompt()
+                    .user(promptText + "\n\n" + formatInstructions)
+                    .call()
+                    .content();
+        } catch (Exception e) {
+            throw new RuntimeException("AIからの応答取得に失敗しました。時間をおいて再度お試しください。", e);
+        }
 
-        String responseText = chatClient.prompt()
-                .user(promptText + "\n\n" + formatInstructions)
-                .call()
-                .content();
+        List<RecommendResponse> recommendList = converter.convert(responseText);
+        
+        if (recommendList == null || recommendList.isEmpty()) {
+            throw new RuntimeException("AIから有効なおすすめ書籍を取得できませんでした。");
+        }
 
-        return converter.convert(responseText);
+        if (recommendList.size() > 3) {
+            recommendList = recommendList.subList(0, 3);
+        }
+
+        for (RecommendResponse book : recommendList) {
+            
+            if (book.getTitle() == null || book.getTitle().trim().isEmpty()) {
+                book.setTitle("AIおすすめの書籍");
+            } else if (book.getTitle().length() > 100) {
+                book.setTitle(book.getTitle().substring(0, 100) + "…");
+            }
+
+            if (book.getAuthor() == null || book.getAuthor().trim().isEmpty()) {
+                book.setAuthor("Unknown");
+            } else if (book.getAuthor().length() > 100) {
+                book.setAuthor(book.getAuthor().substring(0, 100) + "…");
+            }
+
+            if (book.getPublisher() == null || book.getPublisher().trim().isEmpty()) {
+                book.setPublisher("不明");
+            } else if (book.getPublisher().length() > 100) {
+                book.setPublisher(book.getPublisher().substring(0, 100) + "…");
+            }
+
+            if (book.getSummary() == null || book.getSummary().trim().isEmpty()) {
+                book.setSummary("詳細情報はありません。");
+            } else if (book.getSummary().length() > 400) {
+                book.setSummary(book.getSummary().substring(0, 400) + "…");
+            }
+            
+            if (book.getReason() == null || book.getReason().trim().isEmpty()) {
+                book.setReason("おすすめの理由はありません。");
+            } else if (book.getReason().length() > 200) {
+                book.setReason(book.getReason().substring(0, 200) + "…");
+            }
+        }
+
+        return recommendList;
     }
 
   

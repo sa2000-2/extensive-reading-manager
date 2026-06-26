@@ -47,7 +47,7 @@
                     <p class="book-detail"><strong>出版社:</strong> <span th:text="${favorite.publisher}">出版社名</span></p>
                 </div>
                 
-                <p class="book-summary"><strong>あらすじと理由:</strong><br><span th:text="${favorite.summary}">あらすじ内容</span></p>
+                <p class="book-summary"><strong>あらすじ:</strong><br><span th:text="${favorite.summary}">あらすじ内容</span></p>
 
                 <div class="action-area">
                     <form th:action="@{/recommend/favorite/delete/{id}(id=${favorite.id})}" method="post" class="delete-form">

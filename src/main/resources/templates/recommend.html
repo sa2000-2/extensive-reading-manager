@@ -53,9 +53,9 @@
                     <option value="Mystery">ミステリー・サスペンス</option>
                     <option value="Fantasy">ファンタジー</option>
                     <option value="Romance">恋愛・ロマンス</option>
-                    <option value="Sci-Fi">SF</option>
+                    <option value="SciFi">SF</option>
                     <option value="Action">バトル・アクション</option>
-                    <option value="Non-Fiction">ノンフィクション</option>
+                    <option value="NonFiction">ノンフィクション</option>
                 </select>
                 <div class="error" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></div>
             </div>
@@ -76,7 +76,8 @@
                     <p class="book-detail"><strong>シリーズ / 出版社:</strong> <span th:text="${book.publisher}">出版社名</span></p>
                 </div>
                 
-                <p class="book-summary"><strong>あらすじと理由:</strong><br><span th:text="${book.summary}">あらすじ</span></p>
+				<p class="summary"><strong>【あらすじ】</strong> <span th:text="${book.summary}"></span></p>
+				<p class="reason"><strong>【おすすめ理由】</strong> <span th:text="${book.reason}"></span></p>
                 
                 <form th:action="@{/recommend/favorite}" method="post" class="favorite-form">
                     <input type="hidden" name="title" th:value="${book.title}">
