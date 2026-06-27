@@ -59,8 +59,14 @@
                 </select>
                 <div class="error" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></div>
             </div>
+			
+			<button type="submit" class="submit-btn">AIにオススメを聞く</button>
 
-            <button type="submit" class="btn-primary center-submit-btn">AIにオススメを聞く</button>
+			<div class="loading-box">
+			    <div class="spinner"></div>
+			    <p class="loading-text">AIがおすすめの本を厳選中...</p>
+			</div>
+			
         </form>
     </div>
 
