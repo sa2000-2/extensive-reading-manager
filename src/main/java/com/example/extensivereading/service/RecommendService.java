@@ -16,8 +16,8 @@ import com.example.extensivereading.entity.Favorite;
 import com.example.extensivereading.repository.FavoriteRepository;
 
 /**
-* AIおすすめ本表示機能に関する処理のServiceクラス
-* AIとの通信や返答の処理、保存、削除を担当する
+* AIおすすめ本表示機能に関する処理のServiceクラス。
+* AIとの通信や返答の処理、保存、削除を担当する。
 */
 @Service
 public class RecommendService {
@@ -63,7 +63,8 @@ public class RecommendService {
 
     
     /**
-     * 選択された条件で出力させたAIのおすすめ本の提案リストを取得する
+     * 選択された条件をもとにAIからおすすめ書籍を取得する。
+     * 入力値の妥当性確認、AI応答の検証・整形も行う。
      * @param level ユーザーが選択したレベル
      * @param type ユーザーが選択した本の種類
      * @param genre ユーザーが選択したジャンル
@@ -192,9 +193,9 @@ public class RecommendService {
 
   
     /**
-     * おすすめ本をお気に入り登録する
+     * おすすめ本をお気に入りとしてデータベースに保存する。
      * @param userId ユーザーID
-     * @param form お気に入り登録するおすすめ本のデータの箱
+     * @param form お気に入り登録する書籍情報
      */
     @Transactional
     public void saveFavorite(String userId, FavoriteForm form) {
@@ -209,7 +210,7 @@ public class RecommendService {
     }
 
     /**
-     * お気に入り登録したおすすめ本のリストを取得する
+     * お気に入り登録したおすすめ本のリストを取得する。
      * @param userId ユーザーID
      * @return データベースから取得したユーザーIDに紐づいたおすすめ本のデータのリスト
      */
@@ -219,7 +220,7 @@ public class RecommendService {
 
     
     /**
-     * お気に入り登録したおすすめ本を削除する
+     * お気に入り登録したおすすめ本を削除する。
      * @param userId ユーザーID
      * @param favoriteId お気に入り登録ID
      */

@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Modifying;
 
 import com.example.extensivereading.entity.Favorite;
 
+/**
+ * お気に入り登録記録のデータベース操作を担当するRepositoryインターフェース。
+ */
 public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
 	/**
 	 * 指定されたユーザーIDに紐づくお気に入り登録記録を、保存日の新しい順に取得する。
@@ -16,7 +19,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
 	List<Favorite> findByUserIdOrderBySavedDateDesc(String userId);
 	
 	/**
-	 * 指定されたユーザーIDに紐づくお気に入り記録を削除する。
+	 * 指定されたユーザーIDに紐づくお気に入り登録記録を削除する。
 	 * @param userId 削除対象のユーザーID
 	 */
 	@Modifying

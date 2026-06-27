@@ -23,7 +23,7 @@ import com.example.extensivereading.service.RecommendService;
 
 /**
  * AIおすすめ本表示機能とお気に入り登録に関するリクエストを制御するControllerクラス。
- * 画面表示(GET)とAIおすすめリストの取得、お気に入りの登録、変更、削除処理(POST)を管理し適切な画面へ誘導する。
+ * 画面表示、AIおすすめ書籍の取得、お気に入りの登録・一覧表示・削除を行い適切な画面へ遷移させる。
  */
 @Controller
 @RequestMapping("/recommend")
@@ -36,9 +36,9 @@ public class RecommendController {
     }
 
     /**
-     * AIおすすめ本表示画面を表示
-     * @param model おすすめのための選択肢データを運ぶためのモデル箱
-     * @return AIおすすめ本表示画面のテンプレート名
+     * AIおすすめ本表示画面を表示する。
+     * @param model ビューへ入力フォームを渡すためのModelオブジェクト
+     * @return AIおすすめ画面のテンプレート名
      */
     @GetMapping
     public String showRecommendForm(Model model) {
@@ -48,11 +48,11 @@ public class RecommendController {
 
     
     /**
-     * AIに尋ねる
-     * @param form 質問のための選択肢を運ぶ箱
+     * 入力条件をもとにAIへおすすめ書籍の取得を依頼する。
+     * @param form AIへ送信する検索条件
      * @param result 入力チェックの結果
-     * @param model おすすめリストやエラーメッセージを運ぶためのモデル箱
-     * @return AIおすすめ本表示画面のテンプレート名
+     * @param model ビューへおすすめリストやエラーメッセージを渡すためのModelオブジェクト
+     * @return AIおすすめ画面のテンプレート名
      */
     @PostMapping("/ask")
     public String askAI(@Validated RecommendForm form, 
@@ -76,12 +76,12 @@ public class RecommendController {
 
     
     /**
-     * おすすめ本をお気に入り登録する
+     * おすすめ本をお気に入り登録する。
      * @param userDetails ログイン中のユーザー情報
-     * @param favoriteForm お気に入り登録する本のデータの箱
-     * @param result 入力チェックの結果
-     * @param redirectAttributes リダイレクトの時にメッセージを運ぶための箱
-     * @return AIおすすめ本表示画面にとぶためのURL、またはお気に入り登録リスト画面にとぶためのURL
+     * @param favoriteForm お気に入り登録する書籍情報
+     * @param result 入力値のバリデーション結果
+     * @param redirectAttributes リダイレクト先へメッセージを渡すためのRedirectAttributes
+     * @return  AIおすすめ画面またはお気に入り一覧画面へのリダイレクトするURL
      */
     @PostMapping("/favorite")
     public String addFavorite(
@@ -110,10 +110,10 @@ public class RecommendController {
 
     
     /**
-     * お気に入り登録リスト画面を表示
+     * お気に入り一覧画面を表示する。
      * @param userDetails ログイン中のユーザー情報
-     * @param model お気に入り登録リストをHTMLに運ぶためのモデル箱
-     * @return お気に入り登録リスト画面のテンプレート名
+     * @param model ビューへお気に入り一覧を画面へ渡すためのModelオブジェクト
+     * @return お気に入り一覧画面のテンプレート名
      */
     @GetMapping("/favorites")
     public String showFavorites(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
@@ -124,11 +124,11 @@ public class RecommendController {
 
     
     /**
-     * お気に入り登録を削除する
-     * @param userDetails ログイン中のユーザー情報
+     * お気に入り登録を削除する。
+     * @param userDetails 認証済みのユーザー情報
      * @param id お気に入り登録ID
-     * @param redirectAttributes リダイレクトの時にメッセージを運ぶための箱
-     * @return お気に入り登録リスト画面にとぶためのURL
+     * @param redirectAttributes リダイレクト先へメッセージを渡すためのRedirectAttributes
+     * @return お気に入り一覧画面へリダイレクトするURL
      */
     @PostMapping("/favorite/delete/{id}")
     public String deleteFavorite(@AuthenticationPrincipal UserDetailsImpl userDetails,
