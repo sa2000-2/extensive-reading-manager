@@ -1,86 +1,220 @@
-.navigation-links .btn-link-strong { background-color: #f1f5f9; padding: 8px 16px; border-radius: 6px; transition: background-color 0.2s; }
-.navigation-links .btn-link-strong:hover { background-color: #e0e7ff; text-decoration: none; }
-.card-header-area { margin-bottom: 16px; }
+.navigation-links .btn-link-strong {
+	background-color: #f1f5f9;
+	padding: 8px 16px;
+	border-radius: 6px;
+	transition: background-color 0.2s;
+}
+
+.navigation-links .btn-link-strong:hover {
+	background-color: #e0e7ff;
+	text-decoration: none;
+}
+
+.card-header-area {
+	margin-bottom: 16px;
+}
 
 /* おすすめリスト・アイテム */
-.recommendation-results, .favorite-results { display: flex; flex-direction: column; }
-.book-item, .favorite-item { padding: 24px 0; border-bottom: 1px solid #f1f5f9; }
-.book-item:last-child, .favorite-item:last-child { border-bottom: none; padding-bottom: 0; }
-.book-title { font-size: 18px; color: #1e3a8a; margin: 0 0 12px 0; }
-.book-meta-box { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 12px; background-color: #f8fafc; padding: 10px 16px; border-radius: 6px; }
-.book-detail { font-size: 13px; color: #475569; margin: 0; }
-.book-summary { font-size: 14px; color: #334155; line-height: 1.6; margin: 0 0 16px 0; }
+.recommendation-results,
+.favorite-results {
+	display: flex;
+	flex-direction: column;
+}
+
+.book-item,
+.favorite-item {
+	padding: 24px 0;
+	border-bottom: 1px solid #f1f5f9;
+}
+
+.book-item:last-child,
+.favorite-item:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+
+.book-title {
+	font-size: 18px;
+	color: #1e3a8a;
+	margin: 0 0 12px 0;
+}
+
+.book-meta-box {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 24px;
+	margin-bottom: 12px;
+	background-color: #f8fafc;
+	padding: 10px 16px;
+	border-radius: 6px;
+}
+
+.book-detail {
+	font-size: 13px;
+	color: #475569;
+	margin: 0;
+}
+
+.book-summary {
+	font-size: 14px;
+	color: #334155;
+	line-height: 1.6;
+	margin: 0 0 16px 0;
+}
 
 /* お気に入り追加ボタン固有 */
-.favorite-form { margin: 0; }
-.btn-favorite {
-    background-color: #ffffff;
-    color: #1e3a8a;
-    border: 1px solid #cbd5e1;
-    padding: 8px 20px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+.favorite-form {
+	margin: 0;
 }
-.btn-favorite:hover { background-color: #e0e7ff; border-color: #1e3a8a; }
-.action-area { display: flex; justify-content: flex-end; }
-.delete-form { margin: 0; }
+
+.btn-favorite {
+	background-color: #ffffff;
+	color: #1e3a8a;
+	border: 1px solid #cbd5e1;
+	padding: 8px 20px;
+	border-radius: 6px;
+	font-size: 13px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.2s;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.btn-favorite:hover {
+	background-color: #e0e7ff;
+	border-color: #1e3a8a;
+}
+
+.action-area {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.delete-form {
+	margin: 0;
+}
 
 .loading-box {
-    display: none; 
-    text-align: center;
-    margin-top: 20px;
+	display: none;
+	text-align: center;
+	margin-top: 20px;
 }
 
 .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #EAEAEA;
-    border-top-color: #1e3a8a;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 10px;
+	width: 40px;
+	height: 40px;
+	border: 3px solid #EAEAEA;
+	border-top-color: #1e3a8a;
+	border-radius: 50%;
+	animation: spin 0.8s linear infinite;
+	margin: 0 auto 10px;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 .loading-text {
-    color: #1e3a8a;
-    font-weight: bold;
-    font-size: 15px;
+	color: #1e3a8a;
+	font-weight: bold;
+	font-size: 15px;
 }
 
-.submit-btn:active ~ .loading-box,
-.submit-btn:focus ~ .loading-box {
-	
-    display: block;
+.submit-btn:active~.loading-box,
+.submit-btn:focus~.loading-box {
+
+	display: block;
 }
 
 .submit-btn {
-    align-self: center;
-    width: auto;
-    min-width: 240px;
-    padding: 12px 48px;
-    font-size: 15px;
-    font-weight: bold;
-    letter-spacing: 0.05em;
-    background-color: #1e3a8a;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 12px;
+	align-self: center;
+	width: auto;
+	min-width: 240px;
+	padding: 12px 48px;
+	font-size: 15px;
+	font-weight: bold;
+	letter-spacing: 0.05em;
+	background-color: #1e3a8a;
+	color: #ffffff;
+	border: none;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-top: 12px;
 }
+
 .submit-btn:hover {
-    background-color: #172554;
-    box-shadow: 0 6px 16px rgba(30, 58, 138, 0.25);
-    transform: translateY(-1px);
+	background-color: #172554;
+	box-shadow: 0 6px 16px rgba(30, 58, 138, 0.25);
+	transform: translateY(-1px);
 }
-.submit-btn:active { transform: translateY(1px); box-shadow: 0 2px 6px rgba(30, 58, 138, 0.15); }
+
+.submit-btn:active {
+	transform: translateY(1px);
+	box-shadow: 0 2px 6px rgba(30, 58, 138, 0.15);
+}
+
+
+
+
+.action-area {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16px;
+	margin-top: 24px;
+	padding: 0 8px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* フォーム単体の余白潰し（隙間が出ないようにリセット） */
+.action-area .record-form,
+.action-area .delete-form {
+	margin: 0;
+	padding: 0;
+	display: inline-block;
+}
+
+
+.action-area .btn-record {
+	background-color: #1e3a8a;
+	color: #ffffff;
+	border: 1px solid #1e3a8a;
+	padding: 10px 20px;
+	font-size: 14px;
+	font-weight: bold;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+.action-area .btn-record:hover {
+	background-color: #111827;
+	border-color: #111827;
+}
+
+
+.action-area .delete-button {
+		background: #fff5f5;
+		color: #e11d48;
+		border: 1px solid #fecdd3;
+		padding: 10px 20px;
+		border-radius: 4px;
+		font-size: 14px;
+		font-weight: bold;
+		cursor: pointer;
+		transition: all 0.2s;
+	}
+
+	.action-area .delete-button:hover {
+		background: #ffe4e6;
+		border-color: #fda4af;
+	}
+	
+	.results-card .action-area {
+		justify-content: flex-end;
+	}
