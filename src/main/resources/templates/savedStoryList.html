@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>保存したストーリー一覧</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/recommend.css}">
+</head>
+<body class="main-body">
+
+<div class="main-container">
+
+    <div class="card header-card">
+        <h2>保存したストーリー</h2>
+        <p class="sub-text">これまでにAIが生成し、あなたが保存したストーリーの一覧です。<br>
+			タイトルをクリックすると本文と日本語訳が読めます。</p>
+        
+        <div class="navigation-links">
+            <a th:href="@{/story}">← ストーリー生成画面へ</a>
+        </div>
+    </div>
+
+    <div th:if="${successMessage != null}" class="success-message">
+        <p th:text="${successMessage}" class="alert-danger-text"></p>
+    </div>
+
+    <div class="card results-card">
+        <h3>保存済みストーリー（最新順）</h3>
+
+        <div th:if="${#lists.isEmpty(storyList)}">
+            <p class="sub-text">保存されたストーリーはまだありません。</p>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(storyList)}" class="favorite-results">
+            
+            <div th:each="story : ${storyList}" class="favorite-item">
+                
+                <div>
+                    <h4 class="book-title">
+                        <a th:href="@{/story/savedStory/{id}(id=${story.storyId})}" th:text="${story.title}">ストーリータイトル</a>
+                    </h4>
+                    
+                    <div class="book-meta-box">
+                        <p class="book-detail"><strong>語数:</strong> <span th:text="${story.wordCount}">0</span> 語</p>
+                    </div>
+                </div>
+
+                <div class="action-area">
+                    <form th:action="@{/story/delete/{id}(id=${story.storyId})}" method="post" class="delete-form" onsubmit="return confirm('本当にこのストーリーを削除しますか？');">
+                        <button type="submit" class="delete-button">削除</button>
+                    </form>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

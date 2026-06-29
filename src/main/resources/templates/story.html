@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AIストーリー</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/recommend.css}">
+</head>
+<body class="main-body">
+
+<div class="main-container">
+
+    <div class="card header-card">
+        <h2>AIストーリー</h2>
+        <p class="sub-text">あなたのレベルと読みたい語数、ジャンルに合わせてAIがストーリーを作ります。<br>
+			気に入ったストーリー、途中まで読んだストーリーは保存できます。<br>
+		    ※AI生成の性質上、実際の語数と表記に数十語の差異が生じる場合があります。</p>
+        
+        <div class="navigation-links">
+            <a th:href="@{/users/main}">← メイン画面へ</a>
+            <a th:href="@{/story/savedStoryList}" class="btn-link-strong">保存したストーリーを見る</a>
+        </div>
+    </div>
+
+    <div class="card form-card">
+        <h3>検索条件を設定</h3>
+
+        <div th:if="${errorMessage != null}" class="inner-error-message">
+            <p class="alert-danger-text" th:text="${errorMessage}"></p>
+        </div>
+		
+		<div th:if="${successMessage != null}" class="inner-success-message">
+            <p class="alert-danger-text" th:text="${successMessage}"></p>
+        </div>
+
+        <form th:action="@{/story/ask}" th:object="${storyForm}" method="post" class="form">
+            
+            <div class="form-group">
+                <label>レベル (1〜9)</label>
+                <select th:field="*{level}" class="form-select">
+                    <option th:each="i : ${#numbers.sequence(1, 9)}" th:value="${i}" th:text="'レベル ' + ${i}"></option>
+                </select>
+                <div class="error" th:if="${#fields.hasErrors('level')}" th:errors="*{level}"></div>
+            </div>
+
+            <div class="form-group">
+                <label>語数</label>
+                <select th:field="*{wordCount}" class="form-select">
+                    <option value="100">100語</option>
+                    <option value="200">200語</option>
+                    <option value="300">300語</option>
+                    <option value="400">400語</option>
+                    <option value="500">500語</option>
+                </select>
+                <div class="error" th:if="${#fields.hasErrors('wordCount')}" th:errors="*{wordCount}"></div>
+            </div>
+
+            <div class="form-group">
+                <label>ジャンル</label>
+                <select th:field="*{genre}" class="form-select">
+                    <option value="Mystery">ミステリー・サスペンス</option>
+                    <option value="Fantasy">ファンタジー</option>
+                    <option value="Romance">恋愛・ロマンス</option>
+                    <option value="SciFi">SF</option>
+                    <option value="Action">バトル・アクション</option>
+                    <option value="NonFiction">ノンフィクション</option>
+                </select>
+                <div class="error" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></div>
+            </div>
+			
+			<button type="submit" class="submit-btn">AIにストーリーを出してもらう</button>
+
+			<div class="loading-box">
+			    <div class="spinner"></div>
+			    <p class="loading-text">AIがストーリーを作っています...</p>
+			</div>
+			
+        </form>
+    </div>
+
+    <div th:if="${aiStory != null}" class="card results-card">
+        <h3>AIストーリー</h3>
+        
+        <div class="recommendation-results">
+            <div class="book-item">
+                <h4 th:text="${aiStory.title}" class="book-title">ストーリータイトル</h4>
+                
+                <div class="book-meta-box">
+                    <p class="book-detail"><strong>指定語数:</strong> <span th:text="${aiStory.wordCount}">0</span> 語</p>
+                </div>
+                
+                <p class="book-summary"><strong>【Story (English)】</strong><br><span th:text="${aiStory.contents}" style="white-space: pre-wrap;"></span></p>
+				
+                <details class="translation-details">
+                    <summary class="translation-summary">日本語訳を表示する</summary>
+                    <div class="translation-content">
+                        <p class="book-summary" th:text="${aiStory.japanese}" style="white-space: pre-wrap;"></p>
+                    </div>
+                </details>
+  
+                <div class="action-area">
+                    
+                    <form th:action="@{/story/saveStory}" method="post" class="favorite-form">
+                        <input type="hidden" name="title" th:value="${aiStory.title}">
+                        <input type="hidden" name="contents" th:value="${aiStory.contents}">
+                        <input type="hidden" name="wordCount" th:value="${aiStory.wordCount}">
+                        <input type="hidden" name="japanese" th:value="${aiStory.japanese}">
+                        <button type="submit" class="btn-favorite">ストーリーを保存する</button>
+                    </form>
+
+                    <form th:action="@{/story/register}" method="post" class="record-form">
+                        <input type="hidden" name="title" th:value="${aiStory.title}">
+                        <input type="hidden" name="contents" th:value="${aiStory.contents}">
+                        <input type="hidden" name="wordCount" th:value="${aiStory.wordCount}">
+                        <input type="hidden" name="japanese" th:value="${aiStory.japanese}">
+                        <button type="submit" class="btn-favorite btn-record">読書記録に登録する</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

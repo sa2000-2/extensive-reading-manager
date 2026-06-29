@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title th:text="${story.title}">ストーリー詳細</title>
+	<link rel="stylesheet" th:href="@{/css/common.css}">
+	<link rel="stylesheet" th:href="@{/css/main.css}">
+	<link rel="stylesheet" th:href="@{/css/recommend.css}">
+</head>
+
+<body class="main-body">
+
+	<div class="main-container">
+
+		<div class="card header-card">
+			<h2 th:text="${story.title}">ストーリータイトル</h2>
+
+			<div class="book-meta-box">
+				<p class="book-detail"><strong>合計語数:</strong> <span th:text="${story.wordCount}">0</span> 語</p>
+			</div>
+
+			<div class="navigation-links">
+				<a th:href="@{/story/savedStoryList}">← 保存一覧へ戻る</a>
+			</div>
+		</div>
+
+		<div th:if="${successMessage != null}" class="success-message">
+			<p th:text="${successMessage}" class="alert-danger-text"></p>
+		</div>
+
+		<div class="card results-card">
+			<div class="book-item">
+				<h3>【Story (English)】</h3>
+				<p class="book-summary" th:text="${story.contents}"></p>
+			</div>
+
+			<details class="translation-details">
+				<summary class="translation-summary">
+					日本語訳を表示して答え合わせする
+				</summary>
+				<div class="translation-content">
+					<p class="book-summary" th:text="${story.japanese}"></p>
+				</div>
+			</details>
+		</div>
+		
+		<div class="action-area">
+		        
+		        <form th:action="@{/story/registerFromDetail}" method="post" class="record-form">
+		            <input type="hidden" name="storyId" th:value="${storyId != null ? storyId : story.storyId}">
+		            
+		            <input type="hidden" name="title" th:value="${story.title}">
+		            <input type="hidden" name="contents" th:value="${story.contents}">
+		            <input type="hidden" name="wordCount" th:value="${story.wordCount}">
+		            <input type="hidden" name="japanese" th:value="${story.japanese}">
+		            <button type="submit" class="btn-record">読書記録に登録する</button>
+		        </form>
+		        
+		        <form th:action="@{/story/delete/{id}(id=${storyId != null ? storyId : #vars['story']?.storyId})}" method="post" class="delete-form" onsubmit="return confirm('本当にこのストーリーを削除しますか？');">
+		            <button type="submit" class="delete-button">このストーリーを削除する</button>
+		        </form>
+		        
+		    </div>
+
+	</div>
+
+</body>
+
+</html>
