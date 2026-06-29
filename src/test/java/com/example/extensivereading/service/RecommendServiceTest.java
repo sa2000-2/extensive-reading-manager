@@ -30,21 +30,21 @@ import com.example.extensivereading.repository.FavoriteRepository;
 public class RecommendServiceTest {
 	@Mock
 	private ChatClient chatClient;
-	
+
 	@Mock
 	private ChatClient.Builder chatClientBuilder;
-	
+
 	@Mock
-    private FavoriteRepository favoriteRepository;
-	
+	private FavoriteRepository favoriteRepository;
+
 	@Mock
 	private ChatClient.ChatClientRequestSpec requestSpec;
-	
+
 	@Mock
 	private ChatClient.CallResponseSpec responseSpec;
-	
+
 	private RecommendService recommendService;
-	
+
 	/**
 	 * コンストラクタ内部で builder.build() が実行されるため、
 	 * 事前にbuild()のモック挙動を定義した上で手動でインスタンスを生成する。
@@ -53,6 +53,28 @@ public class RecommendServiceTest {
 	void setUp() {
 		when(chatClientBuilder.build()).thenReturn(chatClient);
 		recommendService = new RecommendService(chatClientBuilder, favoriteRepository);
+	}
+
+	/**
+	 * isInvalidメソッドにおいてジャンルが前後の空白や-を含む場合、
+	 * 正常なジャンルとして判定されfalseを返すことを確認するテスト。
+	 */
+	@Test
+	void isInvalid_ValidGenres_ReturnFalse() {
+		assertFalse(RecommendService.AllowedGenre.isInvalid("Mystery"));
+		assertFalse(RecommendService.AllowedGenre.isInvalid("Fantasy"));
+		assertFalse(RecommendService.AllowedGenre.isInvalid("  sci-fi  "));
+	}
+
+	/**
+	 * isInvalidメソッドにおいて存在しないジャンルやnull、空白のみが指定された場合、
+	 * trueを返すことを確認するテスト。
+	 */
+	@Test
+	void isInvalid_InvalidOrEmptyGenres_ReturnTrue() {
+		assertTrue(RecommendService.AllowedGenre.isInvalid("Horror"));
+		assertTrue(RecommendService.AllowedGenre.isInvalid(null));
+		assertTrue(RecommendService.AllowedGenre.isInvalid("   "));
 	}
 
 	/**
@@ -92,7 +114,6 @@ public class RecommendServiceTest {
 	 */
 	@Test
 	void executeRecommend_GeneralBooks_ReturnRecommendResponseList() {
-		// Arrange
 		String level = "5";
 		String type = "General Books";
 		String genre = "Fantasy";
@@ -108,13 +129,78 @@ public class RecommendServiceTest {
 		when(requestSpec.call()).thenReturn(responseSpec);
 		when(responseSpec.content()).thenReturn(mockAiJson);
 
-		// Act
 		List<RecommendResponse> responses = recommendService.executeRecommend(level, type, genre);
 
-		// Assert
 		assertNotNull(responses);
 		assertEquals(1, responses.size());
 		assertEquals("Book D", responses.get(0).getTitle());
+	}
+
+	/**
+	 * executeRecommendにおいて不正なレベルが指定された場合、
+	 * IllegalArgumentExceptionが発生することを確認するテスト。
+	 */
+	@Test
+	void executeRecommend_InvalidLevel_ThrowIllegalArgumentException() {
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+			recommendService.executeRecommend("10", "Graded Readers", "Mystery");
+		});
+		assertEquals("不正なレベルが選択されました。", exception.getMessage());
+	}
+
+	/**
+	 * executeRecommendにおいて不正な本の種類が指定された場合、
+	 * IllegalArgumentExceptionが発生することを確認するテスト。
+	 */
+	@Test
+	void executeRecommend_InvalidType_ThrowIllegalArgumentException() {
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+			recommendService.executeRecommend("3", "No", "Mystery");
+		});
+		assertEquals("不正な本の種類が選択されました。", exception.getMessage());
+	}
+
+	/**
+	 * executeRecommendにおいて不正なジャンルが指定された場合、
+	 * IllegalArgumentExceptionが発生することを確認するテスト。
+	 */
+	@Test
+	void executeRecommend_InvalidGenre_ThrowIllegalArgumentException() {
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+			recommendService.executeRecommend("3", "Graded Readers", "Anime");
+		});
+		assertEquals("不正なジャンルが選択されました。", exception.getMessage());
+	}
+
+	/**
+	 * AIから規定文字数を超えるデータが返却された場合、
+	 * 指定文字数で綺麗に切り詰められ、末尾に「…」が付与されることを確認するテスト。
+	 */
+	@Test
+	void executeRecommend_LongFields_TrimAndTruncateValues() {
+		String level = "3";
+		String type = "Graded Readers";
+		String genre = "Mystery";
+
+		String longTitle = "A".repeat(105);
+
+		String mockAiJson = """
+				[
+				  {"title": "%s", "author": "Author", "publisher": "Publisher", "summary": "Summary"}
+				]
+				""".formatted(longTitle);
+
+		when(chatClient.prompt()).thenReturn(requestSpec);
+		when(requestSpec.user(anyString())).thenReturn(requestSpec);
+		when(requestSpec.call()).thenReturn(responseSpec);
+		when(responseSpec.content()).thenReturn(mockAiJson);
+
+		List<RecommendResponse> responses = recommendService.executeRecommend(level, type, genre);
+
+		assertNotNull(responses);
+
+		assertEquals(101, responses.get(0).getTitle().length());
+		assertTrue(responses.get(0).getTitle().endsWith("…"));
 	}
 
 	/**
@@ -194,7 +280,6 @@ public class RecommendServiceTest {
 	 */
 	@Test
 	void deleteFavorite_ValidUserAndId_DeleteSuccessfully() {
-		// Arrange
 		String userId = "user123";
 		Integer favoriteId = 1;
 
@@ -204,10 +289,8 @@ public class RecommendServiceTest {
 
 		when(favoriteRepository.findById(favoriteId)).thenReturn(Optional.of(existingFavorite));
 
-		// Act
 		recommendService.deleteFavorite(userId, favoriteId);
 
-		// Assert & Verify
 		verify(favoriteRepository).delete(existingFavorite);
 	}
 
@@ -238,11 +321,11 @@ public class RecommendServiceTest {
 		String hackerUserId = "hacker_user";
 		Integer favoriteId = 1;
 
-		Favorite victimFavorite = new Favorite();
-		victimFavorite.setId(favoriteId);
-		victimFavorite.setUserId(myUserId);
+		Favorite mockFavorite = new Favorite();
+		mockFavorite.setId(favoriteId);
+		mockFavorite.setUserId(myUserId);
 
-		when(favoriteRepository.findById(favoriteId)).thenReturn(Optional.of(victimFavorite));
+		when(favoriteRepository.findById(favoriteId)).thenReturn(Optional.of(mockFavorite));
 
 		AccessDeniedException exception = assertThrows(AccessDeniedException.class, () -> {
 			recommendService.deleteFavorite(hackerUserId, favoriteId);
