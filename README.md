@@ -5,7 +5,7 @@
 英語の多読とは、辞書を引かずに読める簡単な英語にたくさん触れて英語を身につける方法です。
 およそ100万語を読むことで英語脳が身につくとされています。
 本アプリはその「100万語達成」をサポートするための読書管理Webアプリケーションです。
-読書記録・進捗の可視化だけでなく「コミュニティ機能（掲示板）」や「AIレコメンド機能」によって挫折しやすい長期間の学習を多角的にサポートします。
+読書記録・進捗の可視化だけでなく「コミュニティ機能（掲示板）」や「AIレコメンド機能」「AIストーリー生成」によって挫折しやすい長期間の学習をサポートします。
 
 ## このポートフォリオの特徴
 
@@ -16,10 +16,18 @@
 ## デモ
 
 ログイン → 読書記録登録
-<img width="1152" height="648" alt="loginbook" src="https://github.com/user-attachments/assets/493c2f73-d079-487d-883a-337eeb373cdd" />
+<img width="1152" height="648" alt="名称未設定のデザイン (1)" src="https://github.com/user-attachments/assets/ff75df74-1869-4f41-b140-d446c91c5790" />
 
-AIおすすめ → 掲示板投稿
-<img width="1152" height="648" alt="aiboard" src="https://github.com/user-attachments/assets/12e11373-b2de-4399-9ed8-f0a92f43e366" />
+AIおすすめ
+<img width="1152" height="648" alt="AIおすすめ" src="https://github.com/user-attachments/assets/d4122b55-fd34-49f6-91e5-3d7f76b8d02f" />
+
+AIストーリー
+<img width="1152" height="648" alt="AIストーリー" src="https://github.com/user-attachments/assets/6d491288-9d35-47ba-a1e9-365db4d0ec8c" />
+
+掲示板投稿→アカウント削除
+<img width="1152" height="648" alt="掲示板アカウント削除" src="https://github.com/user-attachments/assets/3bf2de05-bba7-422d-bdf3-0630458c20cb" />
+
+
 
 
 ## 技術選定の背景と開発プロセス
@@ -52,6 +60,8 @@ AIおすすめ → 掲示板投稿
   * 掲示板（コミュニティ機能）を通じて、同じ目標を持つ学習者同士が励まし合える環境を提供します。
 * **本選びの負担軽減（AIレコメンド機能）**
   * 多読の鉄則である「辞書を引かずに楽しめる、自分に合ったレベルの本」を探す負担を減らすため、ユーザーの好きなジャンルや読みたい本の種類、レベルに合わせた最適な書籍をAIが提案します。
+* **読む本不足の解消（AIストーリー生成機能）**
+  * 多読用書籍を入手しづらいユーザーのため、ユーザーの好きなジャンルや読みたい語数、レベルに合わせたストーリーをAIが生成します。
 
 
 
@@ -75,6 +85,10 @@ AIおすすめ → 掲示板投稿
 - ユーザーが選択したレベル・本の種類（多読用書籍 / 一般書）・ジャンルに応じたプロンプト生成
 - AIから返却されたJSONテキストのパース、DTOリストへの自動マッピング
 - おすすめされた書籍のお気に入り保存・一覧表示・削除機能
+
+### AIストーリー生成（Spring AI）
+- ユーザーが指定したレベル、希望語数、好みのジャンルからプロンプトを構築し、オリジナル英文と日本語訳を同時に自動生成
+- 生成されたストーリーの保存・一覧表示・詳細表示・削除機能
 
 
 
@@ -104,7 +118,7 @@ AIおすすめ → 掲示板投稿
   - ビルド環境：`amazoncorretto:25`
   - 実行環境：`amazoncorretto:25-alpine`
 - **本番データベース**
-  - Render PostgreSQL（外部永続化データベース）
+  - Render PostgreSQL
 
 
 
@@ -157,7 +171,8 @@ Servlet/JSPではリクエストからレスポンスまでの流れを自分で
 - BookRecordService
 - BoardService
 - RecommendService
-正常系・異常系・認可制御を中心に42件の単体テストを実装し、ビジネスロジックの分岐や例外処理を検証しました。
+- StoryService
+正常系・異常系・認可制御を中心に64件の単体テストを実装し、ビジネスロジックの分岐や例外処理を検証しました。
 
 
 ## データベース設計
@@ -169,6 +184,7 @@ erDiagram
     USERS ||--o{ BOOKRECORDS : "1:N (ユーザーは複数の読書記録を持つ)"
     USERS ||--o{ BOARD : "1:N (ユーザーは複数の掲示板投稿を持つ)"
     USERS ||--o{ FAVORITE : "1:N (ユーザーは複数のお気に入り本を持つ)"
+    USERS ||--o{ STORIES : "1:N (ユーザーは複数のAIストーリーを持つ)"
 
     USERS {
         VARCHAR id PK "ユーザーID"
@@ -202,6 +218,16 @@ erDiagram
         VARCHAR publisher "出版社"
         VARCHAR summary "あらすじ"
         TIMESTAMP saved_date "登録日時"
+    }
+
+    STORIES {
+        INTEGER story_id PK "ストーリーID (自動採番)"
+        VARCHAR user_id FK "ユーザーID"
+        VARCHAR title "ストーリータイトル"
+        TEXT contents "ストーリー本文(英語)"
+        VARCHAR word_count "合計語数"
+        TEXT japanese "日本語訳"
+        TIMESTAMP saved_date "保存日時"
     }
 ```
 
@@ -262,12 +288,22 @@ graph TD
     Board -->|"直接実行"| BoardDel[["※投稿の削除機能"]]
     BoardEdit -->|"保存"| Board
 
-    %% 3. AI機能
+    %% 3. AIおすすめ機能
     Main -->|"遷移"| AI["AIおすすめ画面"]
     AI -->|"遷移"| FavList["お気に入りリスト画面"]
     FavList -->|"直接実行"| FavDel[["※お気に入りの削除機能"]]
 
-    %% 4. 設定・退会フロー
+    %% 4. AIストーリー機能
+    Main -->|"遷移"| AIStory["AIストーリー生成画面<br>(story.html)"]
+    AIStory -->|"一覧を見る"| SavedList["ストーリー保存一覧画面<br>(savedStoryList.html)"]
+    SavedList -->|"タイトルクリック"| StoryDetail["ストーリー詳細画面<br>(storyDetail.html)"]
+    
+    %% AIストーリー画面内の直接アクション
+    SavedList -->|"直接実行"| StoryDel[["※ストーリーの削除機能"]]
+    StoryDetail -->|"直接実行"| StoryDetailDel[["※ストーリーの削除機能"]]
+    StoryDetail -->|"直接実行"| RecordReg[["※読書記録への登録機能"]]
+
+    %% 5. 設定・退会フロー
     Main -->|"遷移"| UserSet["ユーザー設定画面"]
     UserSet -->|"退会"| DeleteAcc["アカウント削除画面"]
     DeleteAcc -->|"確定"| DeleteConfirm["アカウント削除確認画面"]
@@ -278,6 +314,9 @@ graph TD
     BookList -.->|"戻る"| Main
     Board -.->|"戻る"| Main
     AI -.->|"戻る"| Main
+    AIStory -.->|"戻る"| Main
+    SavedList -.->|"戻る"| AIStory
+    StoryDetail -.->|"戻る"| SavedList
     UserSet -.->|"戻る"| Main
 ```
 
@@ -289,7 +328,6 @@ graph TD
   - 読書記録や掲示板に本の表紙や写真を添付できるようにし、投稿内容をより分かりやすく共有できるようにします。
 - **友達機能**
   - ユーザー同士で友達登録を行い、お互いの読書記録や進捗を閲覧できるようにすることで継続学習のモチベーション向上につなげます。
-- **AIによるオリジナルストーリー生成**
-  - 多読用書籍を入手しづらいユーザー向けに、レベル・ジャンル・語数に応じたオリジナルの英語ストーリーをAIで生成できるようにします。
+ 
 
 
